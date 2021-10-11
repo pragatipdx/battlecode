@@ -196,5 +196,28 @@ public strictfp class muckraker {
         return actualLocation;
     }
 
+    static final double passabilityThreshold = 0.7;
+    static Direction bugDirection = null;
+
+    static void basicBug(MapLocation target) throws GameActionException {
+        Direction dir = rc.getLocation().directionTo(target);
+        if (rc.getLocation().equals(target)) {
+            //do something
+        } else {
+            if (bugDirection == null) {
+                bugDirection = dir.rotateRight();
+            }
+            for (int i = 0; i < 8; ++i) {
+                if (rc.canMove(bugDirection) && rc.sensePassability(rc.getLocation().add(bugDirection)) >= passabilityThreshold) {
+                    rc.move(bugDirection);
+                    break;
+                }
+                bugDirection = bugDirection.rotateRight();
+            }
+            bugDirection = bugDirection.rotateLeft();
+        }
+    }
+
+
 
 }
