@@ -97,19 +97,16 @@ public strictfp class RobotPlayer {
     static void runMuckraker() throws GameActionException {
         Team enemy = rc.getTeam().opponent();
         Team friend = rc.getTeam();
-        //12 - distance to expose - should me make const? -
-//        int actionRadius = rc.getType().actionRadiusSquared;
+
         int actionRadius = 12;
-        //30 - sense all robots and their properties
-//        int senseRadius = rc.getType().sensorRadiusSquared;
         int senseRadius = 30;
-        //40 - detect all robots and their locations, but NOT properties
-//        int detectionRadius = rc.getType().detectionRadiusSquared;
         int detectionRadius = 40;
 
-
-
         //get ID and Location of EC that spawned bot and store
+        //still needs to be fully implemented - can't think of:
+        //1. whether this is necessary
+        // (I think it is for sending flags to EC, which I believe will act as a hub or coordination)
+        //2. how to run this only once, as soon as the bot is spawned, then store the location and ID
         if (true) {
             System.out.println("\n Sensing Nearby Bots... " + "\n");
             for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
@@ -125,9 +122,9 @@ public strictfp class RobotPlayer {
         }
 
 
-        //detect nearby robots and ECs
+        //detect ALL nearby robots and see how close/far they are
         if (true) {
-            System.out.println("\n DEtecting Nearby Bots... " + "\n");
+            System.out.println("\n Detecting Nearby Bots... " + "\n");
             MapLocation nextPotential = null;
             for (MapLocation location : rc.detectNearbyRobots() ) {
                 if (nextPotential == null) nextPotential = location;
@@ -140,10 +137,9 @@ public strictfp class RobotPlayer {
             }
         }
 
-        //if both are found prioritize EC and swarm
-        //if one is found approach that
-        //if neither if found move away from friends EC that spawned you
 
+
+        //sanity check //print info about self
         System.out.println("\nHome: ID: " + homeID + " LOC: " + homeLoc + " TurnCount: " + turnCount
                 + " Player Cooldown: " + rc.getCooldownTurns() + " Player action/sense/detect radi: " +
                 actionRadius + " / " + senseRadius + " / " + detectionRadius + "\n");
@@ -152,6 +148,8 @@ public strictfp class RobotPlayer {
 
         System.out.println("TEST1");
 
+
+        //look for robots in action radius and expose them if possible
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius, enemy)) {
             if (robot.type.canBeExposed()) {
                 // It's a slanderer... go get them!
@@ -165,9 +163,8 @@ public strictfp class RobotPlayer {
 
         System.out.println("TEST2");
 
-        //detect whether a policitian is a slandered in disguise
-        //protect friendly slanderers
 
+        //sense nearby enemies
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 // It's an Enemy EC! Make your way there to SWARM
@@ -175,8 +172,14 @@ public strictfp class RobotPlayer {
                 basicBug(robot.location);
                 System.out.println("\nMOVED/MOVING TOWARD ENEMY EC");
                 break;
-            } else if (robot.type.equals(RobotType.MUCKRAKER) || robot.type.equals(RobotType.SLANDERER)) {
-                // It's an Enemy Bot! Make your way toward them in hopes of discovering their EC
+            } else if (robot.type.equals(RobotType.SLANDERER)) {
+                // It's a slanderer! advance to EXPOSE!
+                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+                basicBug(robot.location);
+                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
+                break;
+            } else if (robot.type.equals(RobotType.MUCKRAKER)) {
+                // It's a slanderer! advance to EXPOSE!
                 System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
                 basicBug(robot.location);
                 System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
@@ -184,24 +187,29 @@ public strictfp class RobotPlayer {
             } else if (robot.type.equals(RobotType.POLITICIAN)) {
                 // It's an Enemy Politician! Avoid them lest lose your conviction
                 System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
-                //needs to be implemented
-                // moveAway(robot.location);
+
+                //needs to IMPLEMENT!!
+
                 if (tryMove())
                     System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
+
                 break;
+
             } else {
-                //need to implement a random that chooses best passability'
-                System.out.println("\nCOULD NOT FIND any ENEMY BOTS");
-                if (tryMove())
-                    System.out.println("Tally Ho!");
+                continue;
             }
 
         }
 
 
+        //protect friendly slanderers???
+        //prioritize attack vs. defend?
+
 
         System.out.println("TEST3");
 
+        //couldn't find any enemies to move toward or friendly slanderers to protect
+        //move randomly, prioritizing squares with high passibility score
         if (tryMove())
             System.out.println("Tally Ho!");
 
@@ -327,9 +335,12 @@ public strictfp class RobotPlayer {
         return actualLocation;
     }
 
+
+
+    //basic pathfinding bug
+    //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
     static final double passabilityThreshold = 0.6;
     static Direction bugDirection = null;
-
     static void basicBug(MapLocation target) throws GameActionException {
         Direction dir = rc.getLocation().directionTo(target);
         if (rc.getLocation().equals(target)) {
