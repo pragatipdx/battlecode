@@ -1,24 +1,27 @@
 package muckrakerV1;
 import battlecode.common.*;
 
-public strictfp class muckraker {
+import java.awt.*;
+import java.util.Map;
+
+public strictfp class RobotPlayer {
     static RobotController rc;
 
     static final RobotType[] spawnableRobot = {
-        RobotType.POLITICIAN,
-        RobotType.SLANDERER,
-        RobotType.MUCKRAKER,
+            RobotType.POLITICIAN,
+            RobotType.SLANDERER,
+            RobotType.MUCKRAKER,
     };
 
     static final Direction[] directions = {
-        Direction.NORTH,
-        Direction.NORTHEAST,
-        Direction.EAST,
-        Direction.SOUTHEAST,
-        Direction.SOUTH,
-        Direction.SOUTHWEST,
-        Direction.WEST,
-        Direction.NORTHWEST,
+            Direction.NORTH,
+            Direction.NORTHEAST,
+            Direction.EAST,
+            Direction.SOUTHEAST,
+            Direction.SOUTH,
+            Direction.SOUTHWEST,
+            Direction.WEST,
+            Direction.NORTHWEST,
     };
 
     static int turnCount;
@@ -32,7 +35,7 @@ public strictfp class muckraker {
 
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
-        muckraker.rc = rc;
+        RobotPlayer.rc = rc;
 
         turnCount = 0;
 
@@ -92,25 +95,28 @@ public strictfp class muckraker {
             System.out.println("I moved!");
     }
 
+    static MapLocation homeLoc = null;
+    static int homeID = 0;
     static void runMuckraker() throws GameActionException {
         Team enemy = rc.getTeam().opponent();
         Team friend = rc.getTeam();
         //12 - distance to expose - should me make const? -
-        int actionRadius = rc.getType().actionRadiusSquared;
+//        int actionRadius = rc.getType().actionRadiusSquared;
+        int actionRadius = 12;
         //30 - sense all robots and their properties
-        int senseRadius = rc.getType().sensorRadiusSquared;
+//        int senseRadius = rc.getType().sensorRadiusSquared;
+        int senseRadius = 30;
         //40 - detect all robots and their locations, but NOT properties
-        int detectionRadius = rc.getType().detectionRadiusSquared;
-
-        MapLocation homeLoc = null;
-        int homeID = 0;
+//        int detectionRadius = rc.getType().detectionRadiusSquared;
+        int detectionRadius = 40;
 
 
 
         //get ID and Location of EC that spawned bot and store
-        if (turnCount == 1) {
+        if (true) {
+            System.out.println("\n Sensing Nearby Bots... " + "\n");
             for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
-                System.out.println("Robot type: " + robot.type + " Robot Id: "
+                System.out.println("\nRobot type: " + robot.type + " Robot Id: "
                         + robot.ID + " Robot Loc: " +  robot.location + "\n");
                 if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                     homeLoc = robot.location;
@@ -123,12 +129,24 @@ public strictfp class muckraker {
 
 
         //detect nearby robots and ECs
+        if (true) {
+            System.out.println("\n DEtecting Nearby Bots... " + "\n");
+            MapLocation nextPotential = null;
+            for (MapLocation location : rc.detectNearbyRobots() ) {
+                if (nextPotential == null) nextPotential = location;
+                int dist = nextPotential.compareTo(location);
+                System.out.println("\nRobot detected at : " + location + "\nNext Potential: " + nextPotential + "\n");
+                System.out.println("\nDistance " + dist);
+            }
+        }
+
         //if both are found prioritize EC and swarm
         //if one is found approach that
         //if neither if found move away from friends EC that spawned you
 
-        System.out.println("Home: ID: " + homeID + " LOC: " + homeLoc + "TurnCount: " + turnCount
-        + "Player Cooldown: " + rc.getCooldownTurns());
+        System.out.println("\nHome: ID: " + homeID + " LOC: " + homeLoc + " TurnCount: " + turnCount
+                + " Player Cooldown: " + rc.getCooldownTurns() + " Player action/sense/detect radi: " +
+                actionRadius + " / " + senseRadius + " / " + detectionRadius + "\n");
 
 
 
@@ -137,10 +155,20 @@ public strictfp class muckraker {
             if (robot.type.canBeExposed()) {
                 // It's a slanderer... go get them!
                 if (rc.canExpose(robot.location)) {
-                    System.out.println("e x p o s e d");
+                    System.out.println("\ne x p o s e d\n");
                     rc.expose(robot.location);
                     return;//why return instead of moving after?not possible?
                 }
+            }
+        }
+
+        for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
+            if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
+                // It's an Enemy EC! Make your way there to SWARM
+                System.out.println("\nFOUND ENEMY EC at : " + robot.location);
+                basicBug(robot.location);
+                System.out.println("\nMOVED TOWARD ENEMY EC");
+                return;
             }
         }
 
@@ -236,7 +264,7 @@ public strictfp class muckraker {
         return actualLocation;
     }
 
-    static final double passabilityThreshold = 0.7;
+    static final double passabilityThreshold = 0.6;
     static Direction bugDirection = null;
 
     static void basicBug(MapLocation target) throws GameActionException {
