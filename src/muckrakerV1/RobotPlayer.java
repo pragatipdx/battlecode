@@ -46,7 +46,7 @@ public strictfp class RobotPlayer {
             try {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You may rewrite this into your own control structure if you wish.
-                System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
+                System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation() + " I was created on turncount: " + turnCount);
                 switch (rc.getType()) {
                     case ENLIGHTENMENT_CENTER: runEnlightenmentCenter(); break;
                     case POLITICIAN:           runPolitician();          break;
@@ -134,7 +134,10 @@ public strictfp class RobotPlayer {
             MapLocation nextPotential = null;
             for (MapLocation location : rc.detectNearbyRobots() ) {
                 if (nextPotential == null) nextPotential = location;
+
+                //lower the number returned, farther the distance away
                 int dist = nextPotential.compareTo(location);
+
                 System.out.println("\nRobot detected at : " + location + "\nNext Potential: " + nextPotential + "\n");
                 System.out.println("\nDistance " + dist);
             }
@@ -150,6 +153,7 @@ public strictfp class RobotPlayer {
 
 
 
+        System.out.println("TEST1");
 
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius, enemy)) {
             if (robot.type.canBeExposed()) {
@@ -161,6 +165,11 @@ public strictfp class RobotPlayer {
                 }
             }
         }
+
+        System.out.println("TEST2");
+
+        //detect whether a policitian is a slandered in disguise
+        //protect friendly slanderers
 
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
@@ -178,17 +187,28 @@ public strictfp class RobotPlayer {
             } else if (robot.type.equals(RobotType.POLITICIAN)) {
                 // It's an Enemy Politician! Avoid them lest lose your conviction
                 System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
-//                basicBug(robot.location);
                 //needs to be implemented
-                System.out.println("\nMOVED/MOVING AWAY FROM ENEMY Politician");
+                // moveAway(robot.location);
+                if (tryMove())
+                    System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
                 break;
             } else {
-                //need to implement a random that chooses best passability
-                if (tryMove(randomDirection()))
+                //need to implement a random that chooses best passability'
+                System.out.println("\nCOULD NOT FIND any ENEMY BOTS");
+                if (tryMove())
                     System.out.println("Tally Ho!");
             }
 
         }
+
+
+
+        System.out.println("TEST3");
+
+        if (tryMove())
+            System.out.println("Tally Ho!");
+
+        System.out.println("TEST4");
 
 
 
@@ -221,6 +241,35 @@ public strictfp class RobotPlayer {
      */
     static boolean tryMove(Direction dir) throws GameActionException {
         System.out.println("I am trying to move " + dir + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(dir));
+        if (rc.canMove(dir)) {
+            rc.move(dir);
+            return true;
+        } else return false;
+    }
+
+//    static double bestOption = 0.0;
+    static double temp = 0.0;
+    static boolean tryMove() throws GameActionException {
+        Direction dir = randomDirection();
+        double bestOption = 0.0;
+        for (Direction possibility : directions) {
+            if (rc.canMove(possibility)) {
+                temp = rc.sensePassability(rc.getLocation().add(possibility));
+                System.out.println("Temp pass: " + possibility + " " + temp + " Best option: " + bestOption);
+                if (temp == 1.0) {
+                    System.out.println("I am trying to move " + possibility + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(possibility));
+                    if (rc.canMove(dir)) {
+                        rc.move(dir);
+                        return true;
+                    } else return false;
+                } else if (temp > bestOption) {
+                    bestOption = temp;
+                    dir = possibility;
+                    System.out.println("\nFound better option: " + bestOption + " at " + possibility);
+                }
+            }
+        }
+        System.out.println("I am trying to move " + dir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(dir));
         if (rc.canMove(dir)) {
             rc.move(dir);
             return true;
