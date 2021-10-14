@@ -167,14 +167,31 @@ public strictfp class RobotPlayer {
                 // It's an Enemy EC! Make your way there to SWARM
                 System.out.println("\nFOUND ENEMY EC at : " + robot.location);
                 basicBug(robot.location);
-                System.out.println("\nMOVED TOWARD ENEMY EC");
-                return;
+                System.out.println("\nMOVED/MOVING TOWARD ENEMY EC");
+                break;
+            } else if (robot.type.equals(RobotType.MUCKRAKER) || robot.type.equals(RobotType.SLANDERER)) {
+                // It's an Enemy Bot! Make your way toward them in hopes of discovering their EC
+                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+                basicBug(robot.location);
+                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
+                break;
+            } else if (robot.type.equals(RobotType.POLITICIAN)) {
+                // It's an Enemy Politician! Avoid them lest lose your conviction
+                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+//                basicBug(robot.location);
+                //needs to be implemented
+                System.out.println("\nMOVED/MOVING AWAY FROM ENEMY Politician");
+                break;
+            } else {
+                //need to implement a random that chooses best passability
+                if (tryMove(randomDirection()))
+                    System.out.println("Tally Ho!");
             }
+
         }
 
 
-        if (tryMove(randomDirection()))
-            System.out.println("Tally Ho!");
+
     }
 
     /**
