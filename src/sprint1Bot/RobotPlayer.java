@@ -207,14 +207,13 @@ public strictfp class RobotPlayer {
         //prioritize attack vs. defend?
 
 
-        System.out.println("TEST3");
+        System.out.println("TEST33");
 
         //couldn't find any enemies to move toward or friendly slanderers to protect
         //move randomly, prioritizing squares with high passibility score
-//        if (tryMoveAwayFromHome())
-//            System.out.println("Tally Ho!");
 
-        if (tryMove(randomDirection()))
+
+        if (tryMoveAwayFromHome())
             System.out.println("Tally Ho!");
 
         System.out.println("TEST4");
@@ -292,13 +291,13 @@ public strictfp class RobotPlayer {
         for (Direction possibleDir : directions) {
             if (rc.canMove(possibleDir)) {
                 System.out.println("TESTTT");
-//                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
+                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
             } else {
                 continue;
             }
 
             System.out.println("Checking all possible directions....");
-            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.5) {
+            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.2) {
 //                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
 //                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
                 System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
@@ -326,6 +325,7 @@ public strictfp class RobotPlayer {
     static void sendLocation() throws  GameActionException {
         MapLocation location = rc.getLocation();
         int x = location.x, y = location.y;
+        //
         int encodedLocation = (x % 128) * (y % 128);
         if (rc.canSetFlag(encodedLocation)) {
             rc.setFlag(encodedLocation);
