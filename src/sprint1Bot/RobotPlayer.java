@@ -112,7 +112,7 @@ public strictfp class RobotPlayer {
         //1. whether this is necessary
         // (I think it is for sending flags to EC, which I believe will act as a hub or coordination)
         //2. how to run this only once, as soon as the bot is spawned, then store the location and ID
-        System.out.println("\n Sensing Nearby Bots... " + "\n");
+        System.out.println("\n Sensing Nearby Friendly Bots... " + "\n");
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
             System.out.println("\nRobot type: " + robot.type + " Robot Id: "
                     + robot.ID + " Robot Loc: " +  robot.location + "\n");
@@ -126,7 +126,7 @@ public strictfp class RobotPlayer {
 
 
         //detect ALL nearby robots and see how close/far they are
-        System.out.println("\n Detecting Nearby Bots... " + "\n");
+        System.out.println("\n Detecting ALL Nearby Bots... " + "\n");
 
         for (MapLocation location : rc.detectNearbyRobots() ) {
 
@@ -192,11 +192,14 @@ public strictfp class RobotPlayer {
                 System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
 
                 //needs to IMPLEMENT!!
-
-                if (tryMove())
+                if (runAway(robot.location)){
                     System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
+                }
 
-                break;
+//                if (tryMove())
+//                    System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
+
+                return;
 
             }
 
@@ -314,6 +317,47 @@ public strictfp class RobotPlayer {
                 Collections.shuffle(bestPossDirs);
                 tempDir = bestPossDirs.get(0);
             }
+        System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
+        if (rc.canMove(tempDir)) {
+            rc.move(tempDir);
+            return true;
+        } else return false;
+    }
+
+    static boolean runAway(MapLocation location) throws GameActionException {
+        System.out.println("Trying to move away from Enemy");
+        double bestOption = 0.0;
+        double possiblePass = 0.0;
+        Direction homeDir = rc.getLocation().directionTo(location);
+        Direction tempDir = randomDirection();
+        System.out.println("Enemy dir: " + homeDir);
+        List<Direction> bestPossDirs = new ArrayList<>();
+        for (Direction possibleDir : directions) {
+            if (rc.canMove(possibleDir)) {
+                System.out.println("TEST");
+                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
+            } else {
+                continue;
+            }
+
+            System.out.println("Checking all possible directions....");
+            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.2) {
+//                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
+//                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
+                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
+                bestPossDirs.add(possibleDir);
+//                if (possiblePass > bestOption) {
+//                    bestOption = possiblePass;
+//                    tempDir = possibleDir;
+//                    System.out.println("\nFound better option: " + bestOption + " at " + possibleDir);
+            }
+        }
+        if (bestPossDirs.isEmpty()) {
+            tempDir = randomDirection();
+        } else {
+            Collections.shuffle(bestPossDirs);
+            tempDir = bestPossDirs.get(0);
+        }
         System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
         if (rc.canMove(tempDir)) {
             rc.move(tempDir);
