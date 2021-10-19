@@ -89,6 +89,7 @@ public strictfp class RobotPlayer {
 
     static void runSlanderer() throws GameActionException {
         if (tryMove(randomDirection()))
+
             System.out.println("I moved!");
         Team enemy = rc.getTeam().opponent();
         int actionRadius = rc.getType().actionRadiusSquared;
