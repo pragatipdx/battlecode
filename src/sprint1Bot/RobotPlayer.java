@@ -2,6 +2,7 @@ package sprint1Bot;
 import battlecode.common.*;
 
 import java.sql.SQLSyntaxErrorException;
+import java.util.*;
 
 public strictfp class RobotPlayer {
     static RobotController rc;
@@ -210,7 +211,10 @@ public strictfp class RobotPlayer {
 
         //couldn't find any enemies to move toward or friendly slanderers to protect
         //move randomly, prioritizing squares with high passibility score
-        if (tryMoveAwayFromHome())
+//        if (tryMoveAwayFromHome())
+//            System.out.println("Tally Ho!");
+
+        if (tryMove(randomDirection()))
             System.out.println("Tally Ho!");
 
         System.out.println("TEST4");
@@ -284,19 +288,33 @@ public strictfp class RobotPlayer {
         Direction homeDir = rc.getLocation().directionTo(homeLoc);
         Direction tempDir = randomDirection();
         System.out.println("Home dir: " + homeDir);
+        List<Direction> bestPossDirs = new ArrayList<>();
         for (Direction possibleDir : directions) {
-            System.out.println("Checking all possible directions....");
-            if (rc.canMove(possibleDir) && possibleDir != homeDir) {
-                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
-                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
+            if (rc.canMove(possibleDir)) {
+                System.out.println("TESTTT");
+//                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
+            } else {
+                continue;
+            }
 
-                if (possiblePass > bestOption) {
-                    bestOption = possiblePass;
-                    tempDir = possibleDir;
-                    System.out.println("\nFound better option: " + bestOption + " at " + possibleDir);
+            System.out.println("Checking all possible directions....");
+            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.5) {
+//                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
+//                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
+                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
+                bestPossDirs.add(possibleDir);
+//                if (possiblePass > bestOption) {
+//                    bestOption = possiblePass;
+//                    tempDir = possibleDir;
+//                    System.out.println("\nFound better option: " + bestOption + " at " + possibleDir);
                 }
             }
-        }
+            if (bestPossDirs.isEmpty()) {
+                tempDir = randomDirection();
+        } else {
+                Collections.shuffle(bestPossDirs);
+                tempDir = bestPossDirs.get(0);
+            }
         System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
         if (rc.canMove(tempDir)) {
             rc.move(tempDir);
