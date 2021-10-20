@@ -82,14 +82,18 @@ public strictfp class RobotPlayer {
     static void runEnlightenmentCenter() throws GameActionException {
         RobotType toBuild = randomSpawnableRobotType();
         int influence = 50;
-        for (Direction dir : directions) {
-            if (rc.canBuildRobot(toBuild, dir, influence)) {
-                rc.buildRobot(toBuild, dir, influence);
 
-            } else {
-                break;
+        if(rc.isReady()) {
+            for (Direction dir : directions) {
+                if (rc.canBuildRobot(toBuild, dir, influence)) {
+                    rc.buildRobot(toBuild, dir, influence);
+
+                } else {
+                    break;
+                }
             }
         }
+
 
     }
 
@@ -98,12 +102,34 @@ public strictfp class RobotPlayer {
         RobotInfo weak_Health_EC=null;
         int weak_influence = (int)(Double.MAX_VALUE);
         Team enemy = rc.getTeam().opponent();
+        Team ally = rc.getTeam();
+
+        if (tryMove(randomDirection()))
+            System.out.println("I moved!");
 
         int actionRadius = rc.getType().actionRadiusSquared;
         int senseRadius=rc.getType().sensorRadiusSquared;
 
         RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, enemy);
         RobotInfo[] neutrals=rc.senseNearbyRobots(actionRadius,Team.NEUTRAL);
+
+        // Protect slanderer from enemy
+
+        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)){
+            if(robotA.getType() == RobotType.SLANDERER){
+                MapLocation Mlocate = robotA.getLocation();
+                Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
+                if(rc.canMove(Dlocate)){
+                    if (tryMove(Dlocate)){
+                        rc.move(Dlocate);
+                        System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+                    }
+
+                }
+            }
+        }
+
+        // Empower if enemy and neutral within range
 
         if (attackable.length != 0 || neutrals.length !=0) {
             if (rc.canEmpower(actionRadius)) {
@@ -113,6 +139,7 @@ public strictfp class RobotPlayer {
             }
         }
 
+        //Find lowest influence EC
 
         for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
@@ -133,21 +160,50 @@ public strictfp class RobotPlayer {
             moveToDest(rc.getLocation().directionTo(ec_Location));
         }
 
-//        while (!tryMove(target) && rc.isReady()){
-//            target = directions[(int) (Math.random() * directions.length)];
-//        }
 
-
-        if (tryMove(randomDirection()))
-            System.out.println("I moved!");
     }
 
     static void runSlanderer() throws GameActionException {
 
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
+        Team enemy = rc.getTeam().opponent();
+        int actionRadius = rc.getType().actionRadiusSquared;
+        for (RobotInfo robot : rc.senseNearbyRobots(actionRadius, enemy)) {
+            if (robot.type.canBeExposed()) {
+                if (robot.getType() == RobotType.MUCKRAKER) {
+                    MapLocation Mlocate = robot.getLocation();
+                    Direction Dlocate = robot.getLocation().directionTo(Mlocate);
+                    Direction OppDlocate = Dlocate.opposite();
+                    if (rc.canMove(OppDlocate)) {
+                        if (tryMove(OppDlocate)) {
+                            rc.move(OppDlocate);
+                            System.out.println("!!!!!!!!!!I am moving away from muckraker towards " + OppDlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(OppDlocate));
+                        }
 
+                    }
+                }
+            }
+        }
+        Team ally = rc.getTeam();
+        int actionRadiusA = rc.getType().actionRadiusSquared;
+        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadiusA, ally)){
+            if(robotA.getType() == RobotType.ENLIGHTENMENT_CENTER){
+                MapLocation Mlocate = robotA.getLocation();
+                Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
+                if(rc.canMove(Dlocate)){
+                    if (tryMove(Dlocate)){
+                        rc.move(Dlocate);
+                        System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+                    }
+
+                }
+            }
+        }
     }
+
+
+
 
 
 
@@ -406,12 +462,6 @@ public strictfp class RobotPlayer {
             bugDirection = bugDirection.rotateLeft();
         }
     }
-
-
-
-
-
-
 
 
 }
