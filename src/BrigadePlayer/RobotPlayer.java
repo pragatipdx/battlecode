@@ -1,7 +1,6 @@
 package BrigadePlayer;
 
 import battlecode.common.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,8 @@ public strictfp class RobotPlayer {
     //THESE NEED TO BE CHANGED
     static MapLocation homeLoc = null;
     static int homeID = 0;
+
+
 
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
@@ -82,20 +83,33 @@ public strictfp class RobotPlayer {
     static void runEnlightenmentCenter() throws GameActionException {
         RobotType toBuild = randomSpawnableRobotType();
         int influence = 50;
+        int currentInfluence = rc.getInfluence();
 
-        if(rc.isReady()) {
-            for (Direction dir : directions) {
-                if (rc.canBuildRobot(toBuild, dir, influence)) {
-                    rc.buildRobot(toBuild, dir, influence);
-
-                } else {
-                    break;
-                }
+        for (Direction dir : directions) {
+            if (rc.canBuildRobot(toBuild, dir, influence)) {
+                rc.buildRobot(toBuild, dir, influence);
+            } else {
+                break;
             }
         }
 
-
+        // Bidding - Check is votes is upper threshold and start bidding after building influence
+        if (rc.getTeamVotes() < 751) {
+            if (rc.getTeamVotes() / rc.getRoundNum() < 0.4) {
+                if (rc.canBid((int) (0.1 * currentInfluence))) {
+                    rc.bid((int) (0.1 * currentInfluence));
+                    System.out.println("Bid " + (int) (0.1 * currentInfluence));
+                }
+            } else {
+                if (rc.canBid((int) (0.06 * currentInfluence))) {
+                    rc.bid((int) (0.06 * currentInfluence));
+                    System.out.println("Bid " + (int) (0.06 * currentInfluence));
+                }
+            }
+        }
     }
+
+
 
     static void runPolitician() throws GameActionException {
 
@@ -104,66 +118,70 @@ public strictfp class RobotPlayer {
         Team enemy = rc.getTeam().opponent();
         Team ally = rc.getTeam();
 
-        if (tryMove(randomDirection()))
-            System.out.println("I moved!");
 
-        int actionRadius = rc.getType().actionRadiusSquared;
-        int senseRadius=rc.getType().sensorRadiusSquared;
+        if(rc.isReady()) {
+            if (tryMove(randomDirection()))
+                System.out.println("I moved!");
 
-        RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, enemy);
-        RobotInfo[] neutrals=rc.senseNearbyRobots(actionRadius,Team.NEUTRAL);
+            int actionRadius = rc.getType().actionRadiusSquared;
+            int senseRadius = rc.getType().sensorRadiusSquared;
 
-        // Protect slanderer from enemy
+            RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, enemy);
+            RobotInfo[] neutrals = rc.senseNearbyRobots(actionRadius, Team.NEUTRAL);
 
-        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)){
-            if(robotA.getType() == RobotType.SLANDERER){
-                MapLocation Mlocate = robotA.getLocation();
-                Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
-                if(rc.canMove(Dlocate)){
-                    if (tryMove(Dlocate)){
-                        rc.move(Dlocate);
-                        System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+            // Protect slanderer from enemy
+
+            for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)) {
+                if (robotA.getType() == RobotType.SLANDERER) {
+                    MapLocation Mlocate = robotA.getLocation();
+                    Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
+                    if (rc.canMove(Dlocate)) {
+                        if (tryMove(Dlocate)) {
+                            rc.move(Dlocate);
+                            System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+                        }
+
                     }
-
                 }
             }
-        }
 
-        // Empower if enemy and neutral within range
+            // Empower if enemy and neutral within range
 
-        if (attackable.length != 0 || neutrals.length !=0) {
-            if (rc.canEmpower(actionRadius)) {
-                System.out.println("empowering...");
-                rc.empower(actionRadius);
-                System.out.println("empowered");
-            }
-        }
-
-        //Find lowest influence EC
-
-        for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
-            if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
-                if (troop.getInfluence() < weak_influence) {
-                    weak_Health_EC = troop;
-                    weak_influence = troop.getInfluence();
-
+            if (attackable.length != 0 || neutrals.length != 0) {
+                if (rc.canEmpower(actionRadius)) {
+                    System.out.println("empowering...");
+                    rc.empower(actionRadius);
+                    System.out.println("empowered");
                 }
             }
-        }
 
-        if (weak_Health_EC != null) {
-            target = rc.getLocation().directionTo(weak_Health_EC.getLocation());
-            moveToDest(target);
-        }
+            //Find lowest influence EC
 
-        if (!rc.getLocation().isWithinDistanceSquared(ec_Location, rc.getType().sensorRadiusSquared)) {
-            moveToDest(rc.getLocation().directionTo(ec_Location));
-        }
+            for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
+                if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+                    if (troop.getInfluence() < weak_influence) {
+                        weak_Health_EC = troop;
+                        weak_influence = troop.getInfluence();
 
+                    }
+                }
+            }
+
+            if (weak_Health_EC != null) {
+                target = rc.getLocation().directionTo(weak_Health_EC.getLocation());
+                moveToDest(target);
+            }
+
+            if (!rc.getLocation().isWithinDistanceSquared(ec_Location, rc.getType().sensorRadiusSquared)) {
+                moveToDest(rc.getLocation().directionTo(ec_Location));
+            }
+
+        }
 
     }
 
     static void runSlanderer() throws GameActionException {
+
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
         Team enemy = rc.getTeam().opponent();
