@@ -94,7 +94,7 @@ public strictfp class RobotPlayer {
         }
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
-        if (rc.getTeamVotes() < 751) {
+        if (rc.getTeamVotes() < 751 && rc.getRoundNum()>50) {
             if (rc.getTeamVotes() / rc.getRoundNum() < 0.4) {
                 if (rc.canBid((int) (0.1 * currentInfluence))) {
                     rc.bid((int) (0.1 * currentInfluence));
@@ -118,8 +118,6 @@ public strictfp class RobotPlayer {
         Team enemy = rc.getTeam().opponent();
         Team ally = rc.getTeam();
 
-
-        if(rc.isReady()) {
             if (tryMove(randomDirection()))
                 System.out.println("I moved!");
 
@@ -167,16 +165,7 @@ public strictfp class RobotPlayer {
                 }
             }
 
-            if (weak_Health_EC != null) {
-                target = rc.getLocation().directionTo(weak_Health_EC.getLocation());
-                moveToDest(target);
-            }
 
-            if (!rc.getLocation().isWithinDistanceSquared(ec_Location, rc.getType().sensorRadiusSquared)) {
-                moveToDest(rc.getLocation().directionTo(ec_Location));
-            }
-
-        }
 
     }
 
