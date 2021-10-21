@@ -233,82 +233,82 @@ public strictfp class RobotPlayer {
         int detectionRadius = 40;
         int detectionRadiusSqr = rc.getType().detectionRadiusSquared;
 
-        System.out.println("\nDetection Radius const: 40    DetectionRadius Squared: " + detectionRadiusSqr);
+//        System.out.println("\nDetection Radius const: 40    DetectionRadius Squared: " + detectionRadiusSqr);
 
-        System.out.println("\n Sensing Nearby Friendly Bots... " + "\n");
+//        System.out.println("\n Sensing Nearby Friendly Bots... " + "\n");
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
-            System.out.println("\nRobot type: " + robot.type + " Robot Id: "
-                    + robot.ID + " Robot Loc: " +  robot.location + "\n");
+//            System.out.println("\nRobot type: " + robot.type + " Robot Id: "
+//                    + robot.ID + " Robot Loc: " +  robot.location + "\n");
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 homeLoc = robot.location;
                 homeID = robot.ID;
-                System.out.println("Found Home! ID: " + homeID + " LOC: " + homeLoc);
+//                System.out.println("Found Home! ID: " + homeID + " LOC: " + homeLoc);
                 break;
             }
         }
 
         //detect ALL nearby robots and see how close/far they are
-        System.out.println("\n Detecting ALL Nearby Bots... " + "\n");
+//        System.out.println("\n Detecting ALL Nearby Bots... " + "\n");
 
         for (MapLocation location : rc.detectNearbyRobots() ) {
 
             //lower the number returned, farther the distance away
             int distance = rc.getLocation().compareTo(location);
 
-            System.out.println("\nRobot detected at : " + location + "\nMy Location: " + rc.getLocation() +
-                    "Distance: " + distance + "\n");
+//            System.out.println("\nRobot detected at : " + location + "\nMy Location: " + rc.getLocation() +
+//                    "Distance: " + distance + "\n");
         }
 
         //sanity check //print info about self
-        System.out.println("\nHome: ID: " + homeID + " LOC: " + homeLoc + " TurnCount: " + turnCount
-                + " Player Cooldown: " + rc.getCooldownTurns() + " Player action/sense/detect radi: " +
-                actionRadius + " / " + senseRadius + " / " + detectionRadius + "\n");
+//        System.out.println("\nHome: ID: " + homeID + " LOC: " + homeLoc + " TurnCount: " + turnCount
+//                + " Player Cooldown: " + rc.getCooldownTurns() + " Player action/sense/detect radi: " +
+//                actionRadius + " / " + senseRadius + " / " + detectionRadius + "\n");
 
-        System.out.println("TEST1");
+//        System.out.println("TEST1");
 
         //look for robots in action radius and expose them if possible
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius, enemy)) {
             if (robot.type.canBeExposed()) {
                 // It's a slanderer... go get them!
                 if (rc.canExpose(robot.location)) {
-                    System.out.println("\ne x p o s e d\n");
+//                    System.out.println("\ne x p o s e d\n");
                     rc.expose(robot.location);
                     return;//why return instead of moving after?not possible?
                 }
             }
         }
 
-        System.out.println("TEST2");
+//        System.out.println("TEST2");
 
         //sense nearby enemies
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
-            System.out.println("This loop should only run if enemy is detected");
+//            System.out.println("This loop should only run if enemy is detected");
 
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 // It's an Enemy EC! Make your way there to SWARM
-                System.out.println("\nFOUND ENEMY EC at : " + robot.location);
+//                System.out.println("\nFOUND ENEMY EC at : " + robot.location);
                 basicBug(robot.location);
-                System.out.println("\nMOVED/MOVING TOWARD ENEMY EC");
+//                System.out.println("\nMOVED/MOVING TOWARD ENEMY EC");
                 break;
             } else if (robot.type.equals(RobotType.SLANDERER)) {
                 // It's a slanderer! advance to EXPOSE!
-                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+//                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
                 basicBug(robot.location);
-                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
+//                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
                 break;
             } else if (robot.type.equals(RobotType.MUCKRAKER)) {
                 // It's a slanderer! advance to EXPOSE!
-                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+//                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
                 basicBug(robot.location);
-                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
+//                System.out.println("\nMOVED/MOVING TOWARD ENEMY BOT");
                 break;
             } else  {
                 // It's an Enemy Politician! Avoid them lest lose your conviction
-                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
+//                System.out.println("\nFOUND ENEMY BOT at : " + robot.location);
 
                 //needs to IMPLEMENT!!
                 if (runAway(robot.location)){
-                    System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
+//                    System.out.println("\nMOVED/MOVING AWAY FROM ENEMY POLITICIAN");
                 }
 
                 return;
@@ -318,7 +318,8 @@ public strictfp class RobotPlayer {
         }
 
         if (tryMoveAwayFromHome())
-            System.out.println("Tally Ho!");
+            return;
+//            System.out.println("Tally Ho!");
     }
 
     /**
@@ -347,7 +348,7 @@ public strictfp class RobotPlayer {
      * @throws GameActionException
      */
     static boolean tryMove(Direction dir) throws GameActionException {
-        System.out.println("I am trying to move " + dir + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(dir));
+//        System.out.println("I am trying to move " + dir + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(dir));
         if (rc.canMove(dir)) {
             rc.move(dir);
             return true;
@@ -375,26 +376,26 @@ public strictfp class RobotPlayer {
 
 
     static boolean tryMoveAwayFromHome() throws GameActionException {
-        System.out.println("Trying to move away from home");
+//        System.out.println("Trying to move away from home");
         double bestOption = 0.0;
         double possiblePass = 0.0;
         Direction homeDir = rc.getLocation().directionTo(homeLoc);
         Direction tempDir = randomDirection();
-        System.out.println("Home dir: " + homeDir);
+//        System.out.println("Home dir: " + homeDir);
         List<Direction> bestPossDirs = new ArrayList<>();
         for (Direction possibleDir : directions) {
             if (rc.canMove(possibleDir)) {
-                System.out.println("TESTTT");
+//                System.out.println("TESTTT");
                 possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
             } else {
                 continue;
             }
 
-            System.out.println("Checking all possible directions....");
+//            System.out.println("Checking all possible directions....");
             if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.2) {
 //                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
 //                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
-                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
+//                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
                 bestPossDirs.add(possibleDir);
 //                if (possiblePass > bestOption) {
 //                    bestOption = possiblePass;
@@ -408,7 +409,7 @@ public strictfp class RobotPlayer {
             Collections.shuffle(bestPossDirs);
             tempDir = bestPossDirs.get(0);
         }
-        System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
+//        System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
         if (rc.canMove(tempDir)) {
             rc.move(tempDir);
             return true;
@@ -416,26 +417,26 @@ public strictfp class RobotPlayer {
     }
 
     static boolean runAway(MapLocation location) throws GameActionException {
-        System.out.println("Trying to move away from Enemy");
+//        System.out.println("Trying to move away from Enemy");
         double bestOption = 0.0;
         double possiblePass = 0.0;
         Direction homeDir = rc.getLocation().directionTo(location);
         Direction tempDir = randomDirection();
-        System.out.println("Enemy dir: " + homeDir);
+//        System.out.println("Enemy dir: " + homeDir);
         List<Direction> bestPossDirs = new ArrayList<>();
         for (Direction possibleDir : directions) {
             if (rc.canMove(possibleDir)) {
-                System.out.println("TEST");
+//                System.out.println("TEST");
                 possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
             } else {
                 continue;
             }
 
-            System.out.println("Checking all possible directions....");
+//            System.out.println("Checking all possible directions....");
             if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.2) {
 //                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
 //                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + "; Current Best option: " + bestOption);
-                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
+//                System.out.println("Possible pass: " + possiblePass + " at " + possibleDir + " ...adding to list");
                 bestPossDirs.add(possibleDir);
 //                if (possiblePass > bestOption) {
 //                    bestOption = possiblePass;
@@ -449,7 +450,7 @@ public strictfp class RobotPlayer {
             Collections.shuffle(bestPossDirs);
             tempDir = bestPossDirs.get(0);
         }
-        System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
+//        System.out.println("I am trying to move " + tempDir + "; Is ready? " + rc.isReady() + " Cooldown Turns:" + rc.getCooldownTurns() + " CanMove in Dir?" + rc.canMove(tempDir));
         if (rc.canMove(tempDir)) {
             rc.move(tempDir);
             return true;
