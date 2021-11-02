@@ -34,6 +34,9 @@ public strictfp class RobotPlayer {
     static int homeID = 0;
 
 
+    public RobotPlayer(RobotController rc) {
+        this.rc = rc;
+    }
 
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
@@ -311,7 +314,7 @@ public strictfp class RobotPlayer {
     {if(rc.canBuildRobot(spawnableRobot[val],dir,influence));
         {rc.buildRobot(spawnableRobot[val],dir,influence);}}}
 
-    static boolean moveToDest(Direction route_to_dir) throws GameActionException {
+    public static boolean moveToDest(Direction route_to_dir) throws GameActionException {
 
         Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
 
