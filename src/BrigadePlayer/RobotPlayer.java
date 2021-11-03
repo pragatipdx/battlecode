@@ -214,8 +214,6 @@ public strictfp class RobotPlayer {
 
 
 
-
-
     static void runMuckraker() throws GameActionException {
         Team enemy = rc.getTeam().opponent();
         Team friend = rc.getTeam();
@@ -223,6 +221,8 @@ public strictfp class RobotPlayer {
         int senseRadius = 30;
         int detectionRadius = 40;
 
+
+        //get and store home location and id
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 homeLoc = robot.location;
@@ -232,10 +232,13 @@ public strictfp class RobotPlayer {
         }
 
 
-        for (MapLocation location : rc.detectNearbyRobots() ) {
-            //lower the number returned, farther the distance away
-            int distance = rc.getLocation().compareTo(location);
-        }
+        //get distance to every robot within detection radius
+        //lower the number returned, farther the distance away
+        //but can only get location of bots - NOT team, type or other properties
+        //not sure yet what use this has - if any.....
+//        for (MapLocation location : rc.detectNearbyRobots() ) {
+//            int distance = rc.getLocation().compareTo(location);
+//        }
 
 
         //look for robots in action radius and expose them if possible
@@ -276,6 +279,20 @@ public strictfp class RobotPlayer {
 //            System.out.println("Tally Ho!");
     }
 
+    /**
+     * Returns a random spawnable RobotType
+     *
+     * @return a random RobotType
+     */
+    static RobotType randomSpawnableRobotType() {
+        return spawnableRobot[(int) (Math.random() * spawnableRobot.length)];
+    }
+
+    static void buildSpawnableRobot(int val,int influence) throws GameActionException
+    {for(Direction dir: directions)
+    {if(rc.canBuildRobot(spawnableRobot[val],dir,influence));
+        {rc.buildRobot(spawnableRobot[val],dir,influence);}}}
+
 
     /**
      * Returns a random Direction.
@@ -284,16 +301,6 @@ public strictfp class RobotPlayer {
      */
     static Direction randomDirection() {
         return directions[(int) (Math.random() * directions.length)];
-    }
-
-
-    /**
-     * Returns a random spawnable RobotType
-     *
-     * @return a random RobotType
-     */
-    static RobotType randomSpawnableRobotType() {
-        return spawnableRobot[(int) (Math.random() * spawnableRobot.length)];
     }
 
 
@@ -313,12 +320,6 @@ public strictfp class RobotPlayer {
     }
 
 
-    static void buildSpawnableRobot(int val,int influence) throws GameActionException
-    {for(Direction dir: directions)
-    {if(rc.canBuildRobot(spawnableRobot[val],dir,influence));
-        {rc.buildRobot(spawnableRobot[val],dir,influence);}}}
-
-
     public static boolean moveToDest(Direction route_to_dir) throws GameActionException {
         Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
         for(Direction dir : dirs) {
@@ -329,6 +330,7 @@ public strictfp class RobotPlayer {
         }
         return false;
     }
+
 
     //basic pathfinding bug
     //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
@@ -360,7 +362,7 @@ public strictfp class RobotPlayer {
             }
             bugDirection = bugDirection.rotateLeft();
         }
-        //if bug cant move at all
+        //if bug cannot move
         return false;
     }
 
