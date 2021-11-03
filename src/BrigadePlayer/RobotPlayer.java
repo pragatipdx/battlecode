@@ -220,9 +220,14 @@ public strictfp class RobotPlayer {
         int actionRadius = 12;
         int senseRadius = 30;
         int detectionRadius = 40;
+        int turnCountTest = 0;
+
+        turnCountTest++;
+        System.out.println("Turncount: "+turnCount + " turnCountTest: "+turnCountTest);
 
 
         //get and store home location and id
+        //only want to do this once on first turn
         for (RobotInfo robot : rc.senseNearbyRobots(actionRadius,friend) ) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 homeLoc = robot.location;
