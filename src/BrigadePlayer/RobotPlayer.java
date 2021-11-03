@@ -315,16 +315,13 @@ public strictfp class RobotPlayer {
         {rc.buildRobot(spawnableRobot[val],dir,influence);}}}
 
     public static boolean moveToDest(Direction route_to_dir) throws GameActionException {
-
         Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
-
         for(Direction dir : dirs) {
             if(rc.canMove(dir)) {
                 rc.move(dir);
                 return true;
             }
         }
-
         return false;
     }
 
@@ -387,9 +384,9 @@ public strictfp class RobotPlayer {
 
     //basic pathfinding bug
     //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
-    static final double passabilityThreshold = 0.6;
-    static Direction bugDirection = null;
     static void basicBug(MapLocation target) throws GameActionException {
+        final double passabilityThreshold = 0.5;
+        Direction bugDirection = null;
         Direction dir = rc.getLocation().directionTo(target);
         if (rc.getLocation().equals(target)) {
             //do something
