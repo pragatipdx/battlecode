@@ -12,7 +12,32 @@ public class RobotPlayerTest {
         private RobotController rcTest = mock(RobotController.class);
         private RobotPlayer rpTest = new RobotPlayer(rcTest);
 
-        @Test
+
+    @Test
+    public void politicianTest() throws GameActionException {
+        when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);
+        when(rcTest.getTeam()).thenReturn(Team.NEUTRAL);
+
+        RobotInfo[] robots={};
+        when(rcTest.senseNearbyRobots(1,Team.NEUTRAL)).thenReturn(robots);
+        when(rcTest.canEmpower(1)).thenReturn(false);
+
+        assertFalse(rpTest.politicianEmpower(1));
+    }
+
+    @Test
+    public void runECTest() throws GameActionException {
+        if (rcTest.getType() == RobotType.ENLIGHTENMENT_CENTER)
+        {assertEquals(RobotType.ENLIGHTENMENT_CENTER, rcTest.getType());}
+        if (rcTest.getType() == RobotType.POLITICIAN)
+        {assertEquals(RobotType.POLITICIAN, rcTest.getType());}
+        if (rcTest.getType() == RobotType.SLANDERER)
+        {assertEquals(RobotType.SLANDERER, rcTest.getType());}
+        if (rcTest.getType() == RobotType.MUCKRAKER)
+        {assertEquals(RobotType.MUCKRAKER, rcTest.getType());}}
+
+
+    @Test
         public void testMoveToDest() throws GameActionException {
             when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);
             when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));

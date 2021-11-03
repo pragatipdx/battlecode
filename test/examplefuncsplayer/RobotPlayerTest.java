@@ -19,20 +19,4 @@ public class RobotPlayerTest {
 		assertEquals(2, 1+1);
 	}
 
-	@Test
-		public void testMoveToDest() throws GameActionException {
-			when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);
-			when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
-			when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
-			when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
-			when(rcTest.canMove(Direction.EAST)).thenReturn(true);
-			when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
-			when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
-			when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
-			when(rcTest.canMove(Direction.WEST)).thenReturn(false);
-			when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
-
-			assertTrue(rpTest.moveToDest(Direction.NORTH));
-	}
-
 }
