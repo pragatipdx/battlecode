@@ -231,10 +231,6 @@ public strictfp class RobotPlayer {
         int actionRadius = 12;
         int senseRadius = 30;
         int detectionRadius = 40;
-        int turnCountTest = 0;
-
-        turnCountTest++;
-        System.out.println("Turncount: "+turnCount + " turnCountTest: "+turnCountTest);
 
 
         //get and store home location and id
@@ -246,7 +242,6 @@ public strictfp class RobotPlayer {
                 break;
             }
         }
-
 
         //get distance to every robot within detection radius
         //lower the number returned, farther the distance away
@@ -264,7 +259,7 @@ public strictfp class RobotPlayer {
                 if (rc.canExpose(robot.location)) {
 //                    System.out.println("\ne x p o s e d\n");
                     rc.expose(robot.location);
-                    return;//why return instead of moving after?not possible?
+//                    return;//why return instead of moving after?not possible?
                 }
             }
         }
@@ -275,24 +270,25 @@ public strictfp class RobotPlayer {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 // It's an Enemy EC! Make your way there to SWARM
                 basicBug(robot.location);
-                return;
+                break;
             } else if (robot.type.equals(RobotType.SLANDERER)) {
                 // It's a slanderer! advance to EXPOSE!
                 basicBug(robot.location);
-                return;
+                break;
             } else if (robot.type.equals(RobotType.MUCKRAKER)) {
                 basicBug(robot.location);
-                return;
+                break;
             } else if (robot.type.equals(RobotType.POLITICIAN))  {
                 runAway(robot.location);
-                return;
+                break;
             } else {
                 continue;
             }
         }
-        if (tryMoveAwayFromHome())
-            return;
-//            System.out.println("Tally Ho!");
+
+        //try to move away from Home EC, hopefully toward enemy
+        tryMoveAwayFromHome();
+
     }
 
     /**
@@ -383,57 +379,31 @@ public strictfp class RobotPlayer {
     }
 
 
-    static boolean tryMoveAwayFromHome() throws GameActionException {
-        double possiblePass = 0.0;
-        Direction homeDir = rc.getLocation().directionTo(homeLoc);
-        Direction tempDir = randomDirection();
-        List<Direction> bestPossDirs = new ArrayList<>();
-        for (Direction possibleDir : directions) {
-            if (rc.canMove(possibleDir)) {
-                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
-            } else {
-                continue;
-            }
-
-            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.0) {
-                bestPossDirs.add(possibleDir);
-            }
-        }
-        if (bestPossDirs.isEmpty()) {
-            tempDir = randomDirection();
-        } else {
-            Collections.shuffle(bestPossDirs);
-            tempDir = bestPossDirs.get(0);
-        }
-        if (rc.canMove(tempDir)) {
-            rc.move(tempDir);
-            return true;
-        } else return false;
-    }
-
-    static boolean runAway(MapLocation location) throws GameActionException {
+    /**
+     * Attempts to move to away from a given MapLocation
+     *
+     * @param location The intended MapLocation to move away from
+     * @return true if a move was performed
+     * @throws GameActionException
+     */
+    static boolean moveAway(MapLocation location) throws GameActionException {
         double possiblePass = 0.0;
         Direction homeDir = rc.getLocation().directionTo(location);
-        Direction tempDir = randomDirection();
+        Direction moveDir = randomDirection();
         List<Direction> bestPossDirs = new ArrayList<>();
         for (Direction possibleDir : directions) {
-            if (rc.canMove(possibleDir)) {
-                possiblePass = rc.sensePassability(rc.getLocation().add(possibleDir));
-            } else {
-                continue;
-            }
-            if (rc.canMove(possibleDir) && possibleDir != homeDir && possiblePass > 0.0) {
+            if (rc.canMove(possibleDir) && possibleDir != homeDir) {
                 bestPossDirs.add(possibleDir);
             }
         }
         if (bestPossDirs.isEmpty()) {
-            tempDir = randomDirection();
+            moveDir = randomDirection();
         } else {
             Collections.shuffle(bestPossDirs);
-            tempDir = bestPossDirs.get(0);
+            moveDir = bestPossDirs.get(0);
         }
-        if (rc.canMove(tempDir)) {
-            rc.move(tempDir);
+        if (rc.canMove(moveDir)) {
+            rc.move(moveDir);
             return true;
         } else return false;
     }
