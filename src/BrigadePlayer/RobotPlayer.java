@@ -276,6 +276,7 @@ public strictfp class RobotPlayer {
 //            System.out.println("Tally Ho!");
     }
 
+
     /**
      * Returns a random Direction.
      *
@@ -285,6 +286,7 @@ public strictfp class RobotPlayer {
         return directions[(int) (Math.random() * directions.length)];
     }
 
+
     /**
      * Returns a random spawnable RobotType
      *
@@ -293,6 +295,7 @@ public strictfp class RobotPlayer {
     static RobotType randomSpawnableRobotType() {
         return spawnableRobot[(int) (Math.random() * spawnableRobot.length)];
     }
+
 
     /**
      * Attempts to move in a given direction.
@@ -309,10 +312,12 @@ public strictfp class RobotPlayer {
         } else return false;
     }
 
+
     static void buildSpawnableRobot(int val,int influence) throws GameActionException
     {for(Direction dir: directions)
     {if(rc.canBuildRobot(spawnableRobot[val],dir,influence));
         {rc.buildRobot(spawnableRobot[val],dir,influence);}}}
+
 
     public static boolean moveToDest(Direction route_to_dir) throws GameActionException {
         Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
@@ -322,6 +327,40 @@ public strictfp class RobotPlayer {
                 return true;
             }
         }
+        return false;
+    }
+
+    //basic pathfinding bug
+    //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
+    /**
+     * Attempts to move to a given MapLocation, navigating around
+     * squares < passabilityThreshold.
+     *
+     * @param targt The intended MapLocation of movement
+     * @return true if a move was performed
+     * @throws GameActionException
+     */
+    static final double passabilityThreshold = 0.3;
+    static Direction bugDirection = null;
+    static boolean basicBug(MapLocation target) throws GameActionException {
+        Direction dir = rc.getLocation().directionTo(target);
+        if (rc.getLocation().equals(target)) {
+            System.out.println("Bug reached target Dest");
+            return true;
+        } else {
+            if (bugDirection == null) {
+                bugDirection = dir.rotateRight();
+            }
+            for (int i = 0; i < 8; ++i) {
+                if (rc.canMove(bugDirection) && rc.sensePassability(rc.getLocation().add(bugDirection)) >= passabilityThreshold) {
+                    rc.move(bugDirection);
+                    return true;
+                }
+                bugDirection = bugDirection.rotateRight();
+            }
+            bugDirection = bugDirection.rotateLeft();
+        }
+        //if bug cant move at all
         return false;
     }
 
@@ -382,28 +421,7 @@ public strictfp class RobotPlayer {
     }
 
 
-    //basic pathfinding bug
-    //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
-    static void basicBug(MapLocation target) throws GameActionException {
-        final double passabilityThreshold = 0.5;
-        Direction bugDirection = null;
-        Direction dir = rc.getLocation().directionTo(target);
-        if (rc.getLocation().equals(target)) {
-            //do something
-        } else {
-            if (bugDirection == null) {
-                bugDirection = dir.rotateRight();
-            }
-            for (int i = 0; i < 8; ++i) {
-                if (rc.canMove(bugDirection) && rc.sensePassability(rc.getLocation().add(bugDirection)) >= passabilityThreshold) {
-                    rc.move(bugDirection);
-                    break;
-                }
-                bugDirection = bugDirection.rotateRight();
-            }
-            bugDirection = bugDirection.rotateLeft();
-        }
-    }
+
 
 
 }
