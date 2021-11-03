@@ -279,7 +279,7 @@ public strictfp class RobotPlayer {
                 basicBug(robot.location);
                 break;
             } else if (robot.type.equals(RobotType.POLITICIAN))  {
-                runAway(robot.location);
+//                runAway(robot.location);
                 break;
             } else {
                 continue;
@@ -287,7 +287,7 @@ public strictfp class RobotPlayer {
         }
 
         //try to move away from Home EC, hopefully toward enemy
-        tryMoveAwayFromHome();
+//        tryMoveAwayFromHome();
 
     }
 
