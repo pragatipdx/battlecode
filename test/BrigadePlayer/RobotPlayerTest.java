@@ -11,7 +11,6 @@ public class RobotPlayerTest {
         private RobotController rcTest = mock(RobotController.class);
         private RobotPlayer rpTest = new RobotPlayer(rcTest);
 
-
     @Test
     public void politicianTest() throws GameActionException {
         when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);

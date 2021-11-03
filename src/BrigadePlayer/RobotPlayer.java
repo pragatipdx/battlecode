@@ -171,7 +171,7 @@ public strictfp class RobotPlayer {
                 System.out.println("empowering...");
                 rc.empower(actionRadius);
                 System.out.println("empowered");
-                val=true;
+                 val=true;
 
             }
         }
