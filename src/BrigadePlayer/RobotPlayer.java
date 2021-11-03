@@ -121,56 +121,67 @@ public strictfp class RobotPlayer {
         Team enemy = rc.getTeam().opponent();
         Team ally = rc.getTeam();
 
-            if (tryMove(randomDirection()))
-                System.out.println("I moved!");
+        if (tryMove(randomDirection()))
+            System.out.println("I moved!");
 
-            int actionRadius = rc.getType().actionRadiusSquared;
-            int senseRadius = rc.getType().sensorRadiusSquared;
+        int actionRadius = rc.getType().actionRadiusSquared;
+        int senseRadius = rc.getType().sensorRadiusSquared;
 
-            RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, enemy);
-            RobotInfo[] neutrals = rc.senseNearbyRobots(actionRadius, Team.NEUTRAL);
+        // Protect slanderer from enemy
 
-            // Protect slanderer from enemy
-
-            for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)) {
-                if (robotA.getType() == RobotType.SLANDERER) {
-                    MapLocation Mlocate = robotA.getLocation();
-                    Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
-                    if (rc.canMove(Dlocate)) {
-                        if (tryMove(Dlocate)) {
-                            rc.move(Dlocate);
-                            System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
-                        }
-
+        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)) {
+            if (robotA.getType() == RobotType.SLANDERER) {
+                MapLocation Mlocate = robotA.getLocation();
+                Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
+                if (rc.canMove(Dlocate)) {
+                    if (tryMove(Dlocate)) {
+                        rc.move(Dlocate);
+                        System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
                     }
+
                 }
             }
+        }
 
-            // Empower if enemy and neutral within range
+        // Empower if enemy and neutral within range
 
-            if (attackable.length != 0 || neutrals.length != 0) {
-                if (rc.canEmpower(actionRadius)) {
-                    System.out.println("empowering...");
-                    rc.empower(actionRadius);
-                    System.out.println("empowered");
+        politicianEmpower(actionRadius);
+
+        //Find lowest influence EC
+
+        for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
+            if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+                if (troop.getInfluence() < weak_influence) {
+                    weak_Health_EC = troop;
+                    weak_influence = troop.getInfluence();
+
                 }
             }
-
-            //Find lowest influence EC
-
-            for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
-                if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
-                    if (troop.getInfluence() < weak_influence) {
-                        weak_Health_EC = troop;
-                        weak_influence = troop.getInfluence();
-
-                    }
-                }
-            }
-
-
+        }
 
     }
+
+    public static boolean politicianEmpower(int actionRadius) throws GameActionException
+    {
+        boolean val=true;
+        RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, rc.getTeam().opponent());
+        RobotInfo[] neutrals = rc.senseNearbyRobots(actionRadius, Team.NEUTRAL);
+
+        if (attackable.length != 0 || neutrals.length != 0) {
+            if (rc.canEmpower(actionRadius)) {
+                System.out.println("empowering...");
+                rc.empower(actionRadius);
+                System.out.println("empowered");
+                val=true;
+
+            }
+        }
+        else{
+            val=false;
+        }
+        return val;
+    }
+
 
     static void runSlanderer() throws GameActionException {
 
