@@ -8,7 +8,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RobotPlayerTest {
-
         private RobotController rcTest = mock(RobotController.class);
         private RobotPlayer rpTest = new RobotPlayer(rcTest);
 

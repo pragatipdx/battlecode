@@ -162,8 +162,7 @@ public strictfp class RobotPlayer {
     }
 
     public static boolean politicianEmpower(int actionRadius) throws GameActionException
-    {
-        boolean val=true;
+    { boolean val=true;
         RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, rc.getTeam().opponent());
         RobotInfo[] neutrals = rc.senseNearbyRobots(actionRadius, Team.NEUTRAL);
 
