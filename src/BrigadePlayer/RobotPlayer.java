@@ -88,6 +88,16 @@ public strictfp class RobotPlayer {
         int influence = 50;
         int currentInfluence = rc.getInfluence();
 
+        //sense nearby enemy politicans
+        int enemyPolCount = countEnemyPoliticians();
+
+        //set an alert flag if enemy politicians are present
+        if (enemyPolCount >= 1) {
+            rc.setFlag(555);
+        } else {
+            rc.setFlag(0);
+        }
+
         for (Direction dir : directions) {
             if (rc.canBuildRobot(toBuild, dir, influence)) {
                 rc.buildRobot(toBuild, dir, influence);
@@ -422,6 +432,17 @@ public strictfp class RobotPlayer {
         }
     }
 
+    //count number of enemy politicians in sensor radius
+    static int countEnemyPoliticians() throws GameActionException {
+        RobotInfo[] nearbyBots = rc.senseNearbyRobots();
+        int count = 0;
+        for (RobotInfo bot : nearbyBots) {
+            if (bot.team == rc.getTeam().opponent() && bot.type == RobotType.POLITICIAN) {
+                count += 1;
+            }
+        }
+        return count;
+    }
 
 //./gradlew run -Pmaps=Andromeda -PteamA=examplefuncsplayer -PteamB=BrigadePlayer
 
