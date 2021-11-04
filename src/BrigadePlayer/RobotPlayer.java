@@ -230,9 +230,9 @@ public strictfp class RobotPlayer {
         int senseRadius = 30;
         int detectionRadius = 40;
 
-        int testTurnCount = 0;
-        testTurnCount += 1;
-        System.out.println("Turncount: " + turnCount + " TestTurnCount: " + testTurnCount + "Robot ID: " + rc.getID());
+//        int testTurnCount = 0;
+//        testTurnCount += 1;
+//        System.out.println("Turncount: " + turnCount + " TestTurnCount: " + testTurnCount + "Robot ID: " + rc.getID());
 
         //get and store home location and id
         //only want to do this once on first turn
@@ -361,7 +361,7 @@ public strictfp class RobotPlayer {
     static boolean basicBug(MapLocation target) throws GameActionException {
         Direction dir = rc.getLocation().directionTo(target);
         if (rc.getLocation().equals(target)) {
-            System.out.println("Bug reached target Dest");
+//            System.out.println("Bug reached target Dest");
             return true;
         } else {
             if (bugDirection == null) {
