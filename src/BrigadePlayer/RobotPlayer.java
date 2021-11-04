@@ -232,6 +232,9 @@ public strictfp class RobotPlayer {
         int senseRadius = 30;
         int detectionRadius = 40;
 
+        int testTurnCount = 0;
+        testTurnCount += 1;
+        System.out.println("Turncount: " + turnCount + " TestTurnCount: " + testTurnCount + "Robot ID: " + rc.getID());
 
         //get and store home location and id
         //only want to do this once on first turn
@@ -276,10 +279,11 @@ public strictfp class RobotPlayer {
                 basicBug(robot.location);
                 break;
             } else if (robot.type.equals(RobotType.MUCKRAKER)) {
+                //move toward muckraker in hopes of finding Enemy EC
                 basicBug(robot.location);
                 break;
             } else if (robot.type.equals(RobotType.POLITICIAN))  {
-//                runAway(robot.location);
+                moveAway(robot.location);
                 break;
             } else {
                 continue;
@@ -287,7 +291,7 @@ public strictfp class RobotPlayer {
         }
 
         //try to move away from Home EC, hopefully toward enemy
-//        tryMoveAwayFromHome();
+        moveAway(homeLoc);
 
     }
 
@@ -387,9 +391,8 @@ public strictfp class RobotPlayer {
      * @throws GameActionException
      */
     static boolean moveAway(MapLocation location) throws GameActionException {
-        double possiblePass = 0.0;
         Direction homeDir = rc.getLocation().directionTo(location);
-        Direction moveDir = randomDirection();
+        Direction moveDir;
         List<Direction> bestPossDirs = new ArrayList<>();
         for (Direction possibleDir : directions) {
             if (rc.canMove(possibleDir) && possibleDir != homeDir) {
@@ -408,6 +411,8 @@ public strictfp class RobotPlayer {
         } else return false;
     }
 
+
+//./gradlew run -Pmaps=Andromeda -PteamA=examplefuncsplayer -PteamB=BrigadePlayer
 
 
 }

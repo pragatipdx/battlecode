@@ -38,29 +38,57 @@ public class RobotPlayerTest {
 
 
     @Test
-        public void testMoveToDest() throws GameActionException {
-            when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);
-            when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
-            when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
-            when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
-            when(rcTest.canMove(Direction.EAST)).thenReturn(true);
-            when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
-            when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
-            when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
-            when(rcTest.canMove(Direction.WEST)).thenReturn(false);
-            when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
+    public void testMoveToDest() throws GameActionException {
+        when(rcTest.getType()).thenReturn(RobotType.POLITICIAN);
+        when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
+        when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
+        when(rcTest.canMove(Direction.EAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.WEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
 
-            assertTrue(rpTest.moveToDest(Direction.NORTH));
+        assertTrue(rpTest.moveToDest(Direction.NORTH));
+    }
 
-        }
     @Test
-        public void slandererTest() throws GameActionException{
-            when(rcTest.getType()).thenReturn(RobotType.SLANDERER);
-            when(rcTest.getTeam()).thenReturn(Team.NEUTRAL);
-            RobotInfo[] robots={};
-            when(rcTest.senseNearbyRobots(1,Team.NEUTRAL)).thenReturn(robots);
-            
-        }
+    public void testMoveAway() throws GameActionException {
+        MapLocation testLoc = new MapLocation(10,10);
+
+        when(rcTest.getType()).thenReturn(RobotType.MUCKRAKER);
+        when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
+        when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
+        when(rcTest.canMove(Direction.EAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.WEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
+
+        assertTrue(rpTest.moveAway(testLoc));
+    }
+
+    @Test
+    public void testBasicBug() throws GameActionException {
+        MapLocation testLoc = new MapLocation(0,0);
+        when(rcTest.getType()).thenReturn(RobotType.MUCKRAKER);
+        when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
+        when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
+        when(rcTest.canMove(Direction.EAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.WEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
+
+        assertTrue(rpTest.basicBug(testLoc));
 
     }
+
+
+}
 
