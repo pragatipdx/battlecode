@@ -89,6 +89,32 @@ public class RobotPlayerTest {
 
     }
 
+    @Test
+    public void testRunAwayFromMuck() throws GameActionException {
+        //tests bot can move away from testLoc
+        MapLocation testLoc = new MapLocation(10,10);
+
+        when(rcTest.getType()).thenReturn(RobotType.SLANDERER);
+        when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
+
+//        when(directionTo(testLoc)).thenReturn(Direction.NORTH);
+
+        when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
+        when(rcTest.canMove(Direction.EAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
+
+        when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
+
+        when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.WEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
+
+        assertFalse(rpTest.runAwayFromMuck(testLoc));
+
+    }
+
+
 
 }
 
