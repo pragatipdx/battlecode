@@ -53,6 +53,14 @@ public class RobotPlayerTest {
             assertTrue(rpTest.moveToDest(Direction.NORTH));
 
         }
+    @Test
+        public void slandererTest() throws GameActionException{
+            when(rcTest.getType()).thenReturn(RobotType.SLANDERER);
+            when(rcTest.getTeam()).thenReturn(Team.NEUTRAL);
+            RobotInfo[] robots={};
+            when(rcTest.senseNearbyRobots(1,Team.NEUTRAL)).thenReturn(robots);
+            
+        }
 
     }
 
