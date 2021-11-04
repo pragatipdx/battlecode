@@ -187,21 +187,16 @@ public strictfp class RobotPlayer {
 
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
-        Team enemy = rc.getTeam().opponent();
-        int actionRadius = rc.getType().actionRadiusSquared;
-        for (RobotInfo robot : rc.senseNearbyRobots(actionRadius, enemy)) {
-            if (robot.type.canBeExposed()) {
-                if (robot.getType() == RobotType.MUCKRAKER) {
-                    MapLocation Mlocate = robot.getLocation();
-                    Direction Dlocate = robot.getLocation().directionTo(Mlocate);
-                    Direction OppDlocate = Dlocate.opposite();
-                    if (rc.canMove(OppDlocate)) {
-                        if (tryMove(OppDlocate)) {
-                            rc.move(OppDlocate);
-                            System.out.println("!!!!!!!!!!I am moving away from muckraker towards " + OppDlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(OppDlocate));
-                        }
 
-                    }
+        Team enemy = rc.getTeam().opponent();
+
+        int actionRadius = rc.getType().actionRadiusSquared;
+        final int senseRadius = 20;
+        for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
+            if (robot.getType() == RobotType.MUCKRAKER) {
+                MapLocation Mlocate = robot.getLocation();
+                if (runAwayFromMuck(Mlocate)) {
+                    System.out.println("I ranAway!");
                 }
             }
         }
@@ -220,6 +215,9 @@ public strictfp class RobotPlayer {
                 }
             }
         }
+
+
+
     }
 
 
@@ -409,6 +407,19 @@ public strictfp class RobotPlayer {
             rc.move(moveDir);
             return true;
         } else return false;
+    }
+
+    static boolean runAwayFromMuck(MapLocation avoid) throws GameActionException{
+        Direction Dlocate = rc.getLocation().directionTo(avoid);
+        Direction OppDlocate = Dlocate.opposite();
+        if (rc.canMove(OppDlocate)) {
+            rc.move(OppDlocate);
+            return true;
+//                System.out.println("!!!!!!!!!!I am moving away from muckraker towards " + OppDlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(OppDlocate));
+
+        } else {
+            return false;
+        }
     }
 
 
