@@ -115,6 +115,27 @@ public class RobotPlayerTest {
     }
 
 
+    @Test
+    public void testBasicBug2() throws GameActionException {
+        //tests that bug can move to testLoc with appropriate passability
+        Double testDouble = new Double(6.0);
+        MapLocation testLoc = new MapLocation(1,0);
+        when(rcTest.getType()).thenReturn(RobotType.MUCKRAKER);
+        when(rcTest.sensePassability(testLoc)).thenReturn(testDouble);
+        when(rcTest.getLocation()).thenReturn(new MapLocation(0,0));
+        when(rcTest.canMove(Direction.NORTH)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHEAST)).thenReturn(false);
+        when(rcTest.canMove(Direction.EAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHEAST)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTH)).thenReturn(true);
+        when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.WEST)).thenReturn(false);
+        when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
+
+        assertTrue(rpTest.basicBug(testLoc));
+    }
+
+
 
 }
 
