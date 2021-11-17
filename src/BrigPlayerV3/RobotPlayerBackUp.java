@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public strictfp class RobotPlayer2 {
+public strictfp class RobotPlayerBackUp {
     static RobotController rc;
 
     static final RobotType[] spawnableRobot = {
@@ -34,7 +34,7 @@ public strictfp class RobotPlayer2 {
     static int homeID = 0;
 
 
-    public RobotPlayer2(RobotController rc) {
+    public RobotPlayerBackUp(RobotController rc) {
         this.rc = rc;
     }
 
@@ -47,18 +47,22 @@ public strictfp class RobotPlayer2 {
 
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
-        RobotPlayer2.rc = rc;
+        RobotPlayerBackUp.rc = rc;
 
         turnCount = 0;
 
         System.out.println("I'm a " + rc.getType() + " and I just got created!");
 
-        RobotInfo[] sensable = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-        for (RobotInfo robot : sensable) {
-            if (robot.getType() == RobotType.ENLIGHTENMENT_CENTER) {
-                ec_Location = robot.getLocation();
-            }
-        }
+
+       //////////////////////////// /////what is this doing?///////////////////////////
+
+//        RobotInfo[] sensable = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+//        for (RobotInfo robot : sensable) {
+//            if (robot.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+//                ec_Location = robot.getLocation();
+//            }
+//        }
+
         while (true) {
             turnCount += 1;
             // Try/catch blocks stop unhandled exceptions, which cause your robot to freeze

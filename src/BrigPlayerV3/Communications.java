@@ -3,6 +3,11 @@ import battlecode.common.*;
 
 
 public class Communications {
+    RobotController rc;
+
+    public Communications(RobotController _rc) {
+        rc = _rc;
+    }
 
 
     static void sendLocation(RobotController rc) throws GameActionException {
