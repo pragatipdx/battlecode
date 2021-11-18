@@ -36,4 +36,4 @@ public strictfp class RobotPlayer {
         }
     }
 }
-//./gradlew run -Pmaps=Andromeda -PteamA=examplefuncsplayer -PteamB=BrigadePlayer
+//./gradlew run -Pmaps=Andromeda -PteamA=BrigPlayerV3 -PteamB=BrigPlayerV3
