@@ -57,38 +57,38 @@ public class Navigation {
 
     //basic pathfinding bug
     //NEEDS TO BE TESTED - HAS NOT BEEN VERIFIED
-    /**
-     * Attempts to move to a given MapLocation, navigating around
-     * squares < passabilityThreshold.
-     *
-     * @param targt The intended MapLocation of movement
-     * @return true if a move was performed
-     * @throws GameActionException
-     */
-    static final double passabilityThreshold = 0.3;
-    static Direction bugDirection = null;
-
-    boolean basicBug(MapLocation target) throws GameActionException {
-        Direction dir = rc.getLocation().directionTo(target);
-        if (rc.getLocation().equals(target)) {
-//            System.out.println("Bug reached target Dest");
-            return true;
-        } else {
-            if (bugDirection == null) {
-                bugDirection = dir.rotateRight();
-            }
-            for (int i = 0; i < 8; ++i) {
-                if (rc.canMove(bugDirection) && rc.sensePassability(rc.getLocation().add(bugDirection)) >= passabilityThreshold) {
-                    rc.move(bugDirection);
-                    return true;
-                }
-                bugDirection = bugDirection.rotateRight();
-            }
-            bugDirection = bugDirection.rotateLeft();
-        }
-        //if bug cannot move
-        return false;
-    }
+//    /**
+//     * Attempts to move to a given MapLocation, navigating around
+//     * squares < passabilityThreshold.
+//     *
+//     * @param targt The intended MapLocation of movement
+//     * @return true if a move was performed
+//     * @throws GameActionException
+//     */
+//    static final double passabilityThreshold = 0.3;
+//    static Direction bugDirection = null;
+//
+//    boolean basicBug(MapLocation target) throws GameActionException {
+//        Direction dir = rc.getLocation().directionTo(target);
+//        if (rc.getLocation().equals(target)) {
+////            System.out.println("Bug reached target Dest");
+//            return true;
+//        } else {
+//            if (bugDirection == null) {
+//                bugDirection = dir.rotateRight();
+//            }
+//            for (int i = 0; i < 8; ++i) {
+//                if (rc.canMove(bugDirection) && rc.sensePassability(rc.getLocation().add(bugDirection)) >= passabilityThreshold) {
+//                    rc.move(bugDirection);
+//                    return true;
+//                }
+//                bugDirection = bugDirection.rotateRight();
+//            }
+//            bugDirection = bugDirection.rotateLeft();
+//        }
+//        //if bug cannot move
+//        return false;
+//    }
 
 
     /**
@@ -99,24 +99,29 @@ public class Navigation {
      * @throws GameActionException
      */
     boolean moveAway(MapLocation location) throws GameActionException {
-        Direction homeDir = rc.getLocation().directionTo(location);
-        Direction moveDir;
-        List<Direction> bestPossDirs = new ArrayList<>();
-        for (Direction possibleDir : Util.directions) {
-            if (rc.canMove(possibleDir) && possibleDir != homeDir) {
-                bestPossDirs.add(possibleDir);
-            }
-        }
-        if (bestPossDirs.isEmpty()) {
-            moveDir = Util.randomDirection();
-        } else {
-            Collections.shuffle(bestPossDirs);
-            moveDir = bestPossDirs.get(0);
-        }
-        if (rc.canMove(moveDir)) {
-            rc.move(moveDir);
+
+        Direction dirToLocation = rc.getLocation().directionTo(location);
+        Direction dirAwayFromLocation = dirToLocation.opposite();
+
+//        System.out.println("dirToLocation: " + dirToLocation + "dirAwayFromLoc : " + dirAwayFromLocation);
+
+        if(rc.canMove(dirAwayFromLocation)) {
+
+            rc.move(dirAwayFromLocation);
+//            System.out.println("I AM MOVING    AWAY  ");
             return true;
-        } else return false;
+
+        } else {
+
+            if(goTo(dirAwayFromLocation)) {
+//              System.out.println("I AM MOVING    AWAY  ");
+                return true;
+            } else {
+//              System.out.println("COULD    NOT   MOVE    AWAY  !!!!");
+                return false;
+            }
+
+        }
     }
 
     boolean runAwayFromMuck(MapLocation avoid) throws GameActionException {
