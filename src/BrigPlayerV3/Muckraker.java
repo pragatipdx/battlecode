@@ -147,7 +147,7 @@ public class Muckraker extends Unit {
         if(!nearbyEnemies.isEmpty()) {
 
             clearPreexistingLists();
-            addRobot();
+            addRobotsToLists();
 
             return true;
         } else
