@@ -61,12 +61,10 @@ public class Muckraker extends Unit {
     }
 
 
-
     public RobotInfo[] senseNearbyRobotsInSenseRadius() {
         RobotInfo[] robotInfos = rc.senseNearbyRobots(senseRadius);
         return robotInfos;
     }
-
 
 
     Boolean exposeEnemy(RobotInfo robot) throws GameActionException {
@@ -103,7 +101,6 @@ public class Muckraker extends Unit {
 
 
     Boolean handleEnemyPoli() throws GameActionException {
-
         if(!nearbyEnemyPolis.isEmpty()) {
             for (RobotInfo robot : nearbyEnemyPolis) {
                 System.out.println("\nFound Enemy POLITICIAN!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
@@ -129,12 +126,9 @@ public class Muckraker extends Unit {
 
     Boolean handleEnemySlanderer() throws GameActionException {
         if(!nearbyEnemySlanderer.isEmpty()) {
-
             for (RobotInfo robot : nearbyEnemySlanderer) {
                 System.out.println("\nFound Enemy SLANDERER - MOVING CLOSER   DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
-
                 exposeEnemy(robot);
-
                 nav.goTo(robot.location);
             }
             return true;
@@ -145,10 +139,8 @@ public class Muckraker extends Unit {
 
     Boolean populateEnemyLists() {
         if(!nearbyEnemies.isEmpty()) {
-
             clearPreexistingLists();
             addRobotsToLists();
-
             return true;
         } else
             return false;
@@ -177,7 +169,6 @@ public class Muckraker extends Unit {
         nearbyEnemySlanderer.clear();
         nearbyEnemyECs.clear();
     }
-
 
 
 }
