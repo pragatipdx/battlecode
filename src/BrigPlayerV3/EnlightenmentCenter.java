@@ -16,15 +16,11 @@ public class EnlightenmentCenter extends Robot{
         int enemyPolCount = countEnemyPoliticians();
 
         //set an alert flag if enemy politicians are present
-        if (enemyPolCount >= 1) {
-            rc.setFlag(555); //NOTE: Replace this when more robust communication is implemented!
-        } else {
-            rc.setFlag(0);
-        }
 
         for (Direction dir : Util.directions) {
             if (rc.canBuildRobot(toBuild, dir, influence)) {
                 rc.buildRobot(toBuild, dir, influence);
+                System.out.println(toBuild.name());
             } else {
                 break;
             }
@@ -34,7 +30,7 @@ public class EnlightenmentCenter extends Robot{
              startbidding();
     }
 
-    private void startbidding() throws GameActionException {
+    public void startbidding() throws GameActionException {
         int currentInfluence = rc.getInfluence();
         if (rc.getTeamVotes() < 751 && rc.getRoundNum()>50) {
             if (rc.getTeamVotes() / rc.getRoundNum() < 0.4) {
@@ -45,14 +41,14 @@ public class EnlightenmentCenter extends Robot{
         }
     }
 
-    private void bidmore(int currentInfluence) throws GameActionException {
+    public void bidmore(int currentInfluence) throws GameActionException {
         if (rc.canBid((int) (0.06 * currentInfluence))) {
             rc.bid((int) (0.06 * currentInfluence));
             System.out.println("Bid " + (int) (0.06 * currentInfluence));
         }
     }
 
-    private void bidless(int currentInfluence) throws GameActionException {
+    public void bidless(int currentInfluence) throws GameActionException {
         if (rc.canBid((int) (0.1 * currentInfluence))) {
             rc.bid((int) (0.1 * currentInfluence));
             System.out.println("Bid " + (int) (0.1 * currentInfluence));
@@ -93,13 +89,13 @@ public class EnlightenmentCenter extends Robot{
         int cycle = currentRound % 10;
         switch (cycle) {
             case 0:
-            case 1: return RobotType.SLANDERER;
-            case 2: return RobotType.MUCKRAKER;
+            case 1:
+            case 2:
             case 3:
             case 4:
             case 5:
-            case 6:
-            case 7:
+            case 6: return RobotType.SLANDERER;
+            case 7: return RobotType.MUCKRAKER;
             case 8: //prioritize slanderers early game
             case 9: if(currentRound < 300) return RobotType.SLANDERER;
         }
@@ -110,7 +106,7 @@ public class EnlightenmentCenter extends Robot{
     public int invest(RobotType toBuild) {
         switch (toBuild) {
             case MUCKRAKER: return 5;
-            case SLANDERER:
+            case SLANDERER: if (rc.getRoundNum() > 400) return 150;
             case POLITICIAN:
         }
         return 50;
