@@ -17,14 +17,7 @@ public class EnlightenmentCenter extends Robot{
 
         //set an alert flag if enemy politicians are present
 
-        for (Direction dir : Util.directions) {
-            if (rc.canBuildRobot(toBuild, dir, influence)) {
-                rc.buildRobot(toBuild, dir, influence);
-                System.out.println(toBuild.name());
-            } else {
-                break;
-            }
-        }
+        startBuild(toBuild, influence);
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
              startbidding();
@@ -110,6 +103,17 @@ public class EnlightenmentCenter extends Robot{
             case POLITICIAN:
         }
         return 50;
+    }
+
+    public void startBuild(RobotType toBuild, int influence) throws GameActionException {
+        for (Direction dir : Util.directions) {
+            if (rc.canBuildRobot(toBuild, dir, influence)) {
+                rc.buildRobot(toBuild, dir, influence);
+                System.out.println(toBuild.name());
+            } else {
+                break;
+            }
+        }
     }
 
 }

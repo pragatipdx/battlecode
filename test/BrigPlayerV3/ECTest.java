@@ -61,4 +61,10 @@ public class ECTest {
         ECtest.startbidding();
         verify(rcTest, times(1)).canBid(6);
     }
+
+    @Test
+    public void testBuild() throws GameActionException {
+        ECtest.startBuild(RobotType.SLANDERER, 50);
+        verify(rcTest, times(1)).canBuildRobot(RobotType.SLANDERER, Direction.NORTH, 50);
+    }
 }
