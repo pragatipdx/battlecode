@@ -154,7 +154,7 @@ public class Muckraker extends Unit {
             return false;
     }
 
-    private void addRobot() {
+    private void addRobotsToLists() {
         for (RobotInfo robot : nearbyEnemies) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 nearbyEnemyECs.add(robot);
