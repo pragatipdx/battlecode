@@ -27,6 +27,10 @@ public class Muckraker extends Unit {
         super(r);
     }
 
+    public Muckraker(RobotController r, Team enemy, Team friend) {
+        super(r, enemy, friend);
+    }
+
 
     public void takeTurn() throws GameActionException {
 
@@ -92,7 +96,7 @@ public class Muckraker extends Unit {
 
 
 
-    RobotInfo[] senseNearbyRobotsInSenseRadius() {
+    public RobotInfo[] senseNearbyRobotsInSenseRadius() {
         RobotInfo[] robotInfos = rc.senseNearbyRobots(senseRadius);
         return robotInfos;
     }
