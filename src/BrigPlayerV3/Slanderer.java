@@ -11,14 +11,16 @@ public class Slanderer extends Unit {
 
     public void takeTurn() throws GameActionException {
         super.takeTurn();
-
         if (nav.tryMove(Util.randomDirection()))
             System.out.println("I moved!");
+              runFromEnemy();
+            stayCLoseToHome();
 
-        Team enemy = rc.getTeam().opponent();
+    }
 
-
+    public boolean runFromEnemy() throws GameActionException {
         final int senseRadius = 20;
+        Team enemy = rc.getTeam().opponent();
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (robot.getType() == RobotType.MUCKRAKER) {
                 MapLocation Mlocate = robot.getLocation();
@@ -27,6 +29,10 @@ public class Slanderer extends Unit {
                 }
             }
         }
+        return true;
+    }
+
+    public boolean stayCLoseToHome() throws GameActionException {
         Team ally = rc.getTeam();
         int actionRadiusA = rc.getType().actionRadiusSquared;
         for (RobotInfo robotA : rc.senseNearbyRobots(actionRadiusA, ally)){
@@ -42,7 +48,9 @@ public class Slanderer extends Unit {
                 }
             }
         }
+        return true;
     }
+
 
 
 }

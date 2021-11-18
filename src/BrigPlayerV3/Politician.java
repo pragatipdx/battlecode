@@ -11,19 +11,23 @@ public class Politician extends Unit {
 
     public void takeTurn() throws GameActionException {
 
-        RobotInfo weak_Health_EC=null;
-        int weak_influence = (int)(Double.MAX_VALUE);
-        Team enemy = rc.getTeam().opponent();
-        Team ally = rc.getTeam();
-
         if (nav.tryMove(Util.randomDirection()))
             System.out.println("I moved!");
 
         int actionRadius = rc.getType().actionRadiusSquared;
-        int senseRadius = rc.getType().sensorRadiusSquared;
-
         // Protect slanderer from enemy
+        protectSlandere(actionRadius);
 
+        // Empower if enemy and neutral within range
+        politicianEmpower(actionRadius);
+
+        //Find lowest influence EC
+        findWeekestInfluenceEC();
+
+    }
+
+    private boolean protectSlandere(int actionRadius) throws GameActionException {
+        Team ally = rc.getTeam();
         for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)) {
             if (robotA.getType() == RobotType.SLANDERER) {
                 MapLocation Mlocate = robotA.getLocation();
@@ -37,12 +41,13 @@ public class Politician extends Unit {
                 }
             }
         }
+        return true;
+    }
 
-        // Empower if enemy and neutral within range
-
-        politicianEmpower(actionRadius);
-
-        //Find lowest influence EC
+    private boolean findWeekestInfluenceEC() {
+        int senseRadius = rc.getType().sensorRadiusSquared;
+        RobotInfo weak_Health_EC=null;
+        int weak_influence = (int)(Double.MAX_VALUE);
 
         for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
@@ -53,9 +58,8 @@ public class Politician extends Unit {
                 }
             }
         }
-
+        return true;
     }
-
 
 
     public boolean politicianEmpower(int actionRadius) throws GameActionException

@@ -11,7 +11,6 @@ public class EnlightenmentCenter extends Robot{
     public void takeTurn() throws GameActionException {
         RobotType toBuild = randomSpawnableRobotType();
         int influence = 50;
-        int currentInfluence = rc.getInfluence();
 
         //sense nearby enemy politicans
         int enemyPolCount = countEnemyPoliticians();
@@ -32,21 +31,33 @@ public class EnlightenmentCenter extends Robot{
         }
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
+             startbidding();
+    }
+
+    private void startbidding() throws GameActionException {
+        int currentInfluence = rc.getInfluence();
         if (rc.getTeamVotes() < 751 && rc.getRoundNum()>50) {
             if (rc.getTeamVotes() / rc.getRoundNum() < 0.4) {
-                if (rc.canBid((int) (0.1 * currentInfluence))) {
-                    rc.bid((int) (0.1 * currentInfluence));
-                    System.out.println("Bid " + (int) (0.1 * currentInfluence));
-                }
+             bidless(currentInfluence);
             } else {
-                if (rc.canBid((int) (0.06 * currentInfluence))) {
-                    rc.bid((int) (0.06 * currentInfluence));
-                    System.out.println("Bid " + (int) (0.06 * currentInfluence));
-                }
+               bidmore(currentInfluence);
             }
         }
     }
 
+    private void bidmore(int currentInfluence) throws GameActionException {
+        if (rc.canBid((int) (0.06 * currentInfluence))) {
+            rc.bid((int) (0.06 * currentInfluence));
+            System.out.println("Bid " + (int) (0.06 * currentInfluence));
+        }
+    }
+
+    private void bidless(int currentInfluence) throws GameActionException {
+        if (rc.canBid((int) (0.1 * currentInfluence))) {
+            rc.bid((int) (0.1 * currentInfluence));
+            System.out.println("Bid " + (int) (0.1 * currentInfluence));
+        }
+    }
 
 
     /**

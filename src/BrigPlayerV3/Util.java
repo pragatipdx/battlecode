@@ -29,7 +29,4 @@ public class Util {
         return directions[(int) (Math.random() * directions.length)];
     }
 
-
-
-
 }

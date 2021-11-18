@@ -34,43 +34,17 @@ public class Muckraker extends Unit {
 
     public void takeTurn() throws GameActionException {
 
-        //System.out.println("Turncount : " + turnCount);
-
         super.takeTurn();
-
-        //System.out.println("Turncount after takeTurn : " + turnCount);
-
-//        coolDownTurns = rc.getCooldownTurns();
-//        System.out.printf("\ncooldownturns 1 :  " + coolDownTurns + "\n");
 
         if (rc.isReady()) {
 
             currentLocation = rc.getLocation();
-
-//            System.out.printf("\ncooldownturns 2 :  " + coolDownTurns + "\n");
-
-            //System.out.println("bytecode limit 1 : " + Clock.getBytecodeNum());
 
             RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
 
             List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
 
             nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
-
-
-            //System.out.printf("cooldownturns AFTER EXPOSING :  " + coolDownTurns);
-
-//        for(RobotInfo rb : robotInfosInSenseRadius) {
-//            //System.out.println(rb);
-//        }
-
-            //System.out.println("bytecode limit 2 : " + Clock.getBytecodeNum());
-
-
-//            if (!nearbyNeutralECs.isEmpty()) {
-//                System.out.printf("\nFOUND NEUTRAL EC - SETTING FLAG at : " + nearbyNeutralECs.get(0).getLocation() +
-//                        " \nDISTANCE : " + currentLocation.distanceSquaredTo(nearbyNeutralECs.get(0).getLocation()));
-//            }
 
 
             populateEnemyLists();
@@ -80,14 +54,6 @@ public class Muckraker extends Unit {
             handleEnemyEC();
 
             handleEnemyPoli();
-
-
-//            if(!nearbyEnemyMuckraker.isEmpty()) {
-//                for (RobotInfo robot : nearbyEnemyMuckraker) {
-//                    System.out.println("\nFound Enemy MUCKRAKER - MOVING CLOSER DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
-//                    nav.goTo(robot.location);
-//                }
-//            }
 
             nav.moveAway(hqLoc);
         }
@@ -181,28 +147,28 @@ public class Muckraker extends Unit {
         if(!nearbyEnemies.isEmpty()) {
 
             clearPreexistingLists();
+            addRobot();
 
-            for (RobotInfo robot : nearbyEnemies) {
-
-                if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
-                    nearbyEnemyECs.add(robot);
-                }
-
-                if (robot.type.equals(RobotType.SLANDERER)) {
-                    nearbyEnemySlanderer.add(robot);
-                }
-
-                if (robot.type.equals(RobotType.MUCKRAKER)) {
-                    nearbyEnemyMuckraker.add(robot);
-                }
-
-                if (robot.type.equals(RobotType.POLITICIAN)) {
-                    nearbyEnemyPolis.add(robot);
-                }
-            }
             return true;
         } else
             return false;
+    }
+
+    private void addRobot() {
+        for (RobotInfo robot : nearbyEnemies) {
+            if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
+                nearbyEnemyECs.add(robot);
+            }
+            if (robot.type.equals(RobotType.SLANDERER)) {
+                nearbyEnemySlanderer.add(robot);
+            }
+            if (robot.type.equals(RobotType.MUCKRAKER)) {
+                nearbyEnemyMuckraker.add(robot);
+            }
+            if (robot.type.equals(RobotType.POLITICIAN)) {
+                nearbyEnemyPolis.add(robot);
+            }
+        }
     }
 
     private void clearPreexistingLists() {
@@ -212,20 +178,6 @@ public class Muckraker extends Unit {
         nearbyEnemyECs.clear();
     }
 
-
-//    Boolean exposeEnemy(RobotInfo[] robotInfos) throws GameActionException {
-//        for (RobotInfo robot : robotInfos) {
-//            if (robot.type.canBeExposed() && robot.team.equals(enemy)) { //&& COOLDOWNTURNS!
-//                //System.out.println("\nCAN BE  ....  e x p o s e d\n");
-//                //System.out.printf("cooldownturns :  " + coolDownTurns);
-//                if (rc.canExpose(robot.location)) {
-//                    //System.out.println("\ne x p o s e d\n");
-//                    rc.expose(robot.location);
-//                }
-//            }
-//        }
-//        return true;
-//    }
 
 
 }

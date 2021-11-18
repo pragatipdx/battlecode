@@ -14,8 +14,6 @@ public strictfp class RobotPlayer {
     @SuppressWarnings("unused")
     public static void run(RobotController rc) throws GameActionException {
         Robot me = null;
-
-
         switch (rc.getType()) {
             case ENLIGHTENMENT_CENTER:      me = new EnlightenmentCenter(rc);       break;
             case POLITICIAN:                me = new Politician(rc);                break;
@@ -26,14 +24,7 @@ public strictfp class RobotPlayer {
         while (true) {
             try {
                 me.takeTurn();
-
-                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
             } catch (Exception e) {
-                System.out.println(rc.getType() + " Exception");
                 e.printStackTrace();
-            }
-        }
-    }
-}
-//./gradlew run -Pmaps=Andromeda -PteamA=BrigPlayerV3 -PteamB=BrigPlayerV3
+            }}}}
