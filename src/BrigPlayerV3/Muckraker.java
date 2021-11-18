@@ -42,12 +42,14 @@ public class Muckraker extends Unit {
 
             RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
 
-            List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
+            if(robotInfosInSenseRadius.length > 0){
 
-            nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
+                List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
 
+                nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
 
-            populateEnemyLists();
+                populateEnemyLists();
+            }
 
             handleEnemySlanderer();
 
@@ -163,11 +165,12 @@ public class Muckraker extends Unit {
         }
     }
 
-    private void clearPreexistingLists() {
+    Boolean clearPreexistingLists() {
         nearbyEnemyMuckraker.clear();
         nearbyEnemyPolis.clear();
         nearbyEnemySlanderer.clear();
         nearbyEnemyECs.clear();
+        return true;
     }
 
 
