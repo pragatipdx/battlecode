@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import battlecode.common.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.mockito.Mockito.mock;

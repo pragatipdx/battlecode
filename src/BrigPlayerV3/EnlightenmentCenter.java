@@ -9,15 +9,15 @@ public class EnlightenmentCenter extends Robot{
     }
 
     public void takeTurn() throws GameActionException {
-        RobotType toBuild = randomSpawnableRobotType();
-        int influence = 50;
+        RobotType toBuild = nextBuild();
+        int influence = invest(toBuild);
 
         //sense nearby enemy politicans
         int enemyPolCount = countEnemyPoliticians();
 
         //set an alert flag if enemy politicians are present
         if (enemyPolCount >= 1) {
-            rc.setFlag(555);
+            rc.setFlag(555); //NOTE: Replace this when more robust communication is implemented!
         } else {
             rc.setFlag(0);
         }
@@ -85,6 +85,35 @@ public class EnlightenmentCenter extends Robot{
             }
         }
         return count;
+    }
+
+    //returns the next robot to be built based on round
+    public RobotType nextBuild() {
+        int currentRound = rc.getRoundNum();
+        int cycle = currentRound % 10;
+        switch (cycle) {
+            case 0:
+            case 1: return RobotType.SLANDERER;
+            case 2: return RobotType.MUCKRAKER;
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8: //prioritize slanderers early game
+            case 9: if(currentRound < 300) return RobotType.SLANDERER;
+        }
+        return RobotType.POLITICIAN;
+    }
+
+    //determines how much influence to invest in a robot based on its type
+    public int invest(RobotType toBuild) {
+        switch (toBuild) {
+            case MUCKRAKER: return 5;
+            case SLANDERER:
+            case POLITICIAN:
+        }
+        return 50;
     }
 
 }
