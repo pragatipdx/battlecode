@@ -37,10 +37,13 @@ public class MuckrakerTest {
 
     @Mock
     private ArrayList<RobotInfo> nearbyEnemyMuckraker;
+    private RobotInfo EnemyBotInfoArr[] = new RobotInfo[2];
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+//        EnemyBotInfoArr[0] = enemyBotMuck;
+//        when(EnemyBotInfoArr[0]).thenReturn(enemyBotMuck);
     }
 
 
@@ -104,7 +107,7 @@ public class MuckrakerTest {
     @Test
     public void clearPreexistingListsTest(){
         when(nearbyEnemyMuckraker.get(0)).thenReturn(enemyBotMuck);
-        nearbyEnemyMuckraker.add(enemyBotMuck);
+//        nearbyEnemyMuckraker.add(enemyBotMuck);
         assertTrue(muckTest.clearPreexistingLists());
         assertEquals(0, nearbyEnemyMuckraker.size());
     }
@@ -112,18 +115,13 @@ public class MuckrakerTest {
     @Test
     @Ignore
     public void getNearbyEnemiesTest() throws GameActionException {
-        enemyBotArr[0] = enemyBotPoli;
-        List<RobotInfo> botList = new ArrayList<RobotInfo>();
-        botList.add(enemyBotPoli);
+//        EnemyBotInfoArr[0] = enemyBotMuck;
+        nearbyEnemyMuckraker.add(enemyBotMuck);
+//        when(enemyBotMuck.team.equals(enemy)).thenReturn(true);
+        when(EnemyBotInfoArr[0]).thenReturn(enemyBotMuck);
 
-//        when(enemyBotPoli.getTeam()).thenReturn(enemy);
-//        when(enemyBotPoli.team.equals(enemy)).thenReturn(true);
-        when(rcTest.getTeam()).thenReturn(friend);
-//        when(enemyBotPoli.getTeam()).thenReturn(enemy);
-
-
-        assertEquals(enemyBotArr.length, muckTest.getNearbyEnemies(enemyBotArr).size());
-        assertEquals(botList, muckTest.getNearbyEnemies(enemyBotArr));
+//        assertEquals(enemyBotArr.length, muckTest.getNearbyEnemies(enemyBotArr).size());
+        assertEquals(nearbyEnemyMuckraker, muckTest.getNearbyEnemies(EnemyBotInfoArr));
     }
 
 
