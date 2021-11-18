@@ -42,12 +42,14 @@ public class Muckraker extends Unit {
 
             RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
 
-            List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
+            if(robotInfosInSenseRadius.length > 0){
 
-            nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
+                List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
 
+                nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
 
-            populateEnemyLists();
+                populateEnemyLists();
+            }
 
             handleEnemySlanderer();
 
@@ -61,12 +63,10 @@ public class Muckraker extends Unit {
     }
 
 
-
     public RobotInfo[] senseNearbyRobotsInSenseRadius() {
         RobotInfo[] robotInfos = rc.senseNearbyRobots(senseRadius);
         return robotInfos;
     }
-
 
 
     Boolean exposeEnemy(RobotInfo robot) throws GameActionException {
@@ -103,7 +103,6 @@ public class Muckraker extends Unit {
 
 
     Boolean handleEnemyPoli() throws GameActionException {
-
         if(!nearbyEnemyPolis.isEmpty()) {
             for (RobotInfo robot : nearbyEnemyPolis) {
                 System.out.println("\nFound Enemy POLITICIAN!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
@@ -129,12 +128,9 @@ public class Muckraker extends Unit {
 
     Boolean handleEnemySlanderer() throws GameActionException {
         if(!nearbyEnemySlanderer.isEmpty()) {
-
             for (RobotInfo robot : nearbyEnemySlanderer) {
                 System.out.println("\nFound Enemy SLANDERER - MOVING CLOSER   DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
-
                 exposeEnemy(robot);
-
                 nav.goTo(robot.location);
             }
             return true;
@@ -145,16 +141,14 @@ public class Muckraker extends Unit {
 
     Boolean populateEnemyLists() {
         if(!nearbyEnemies.isEmpty()) {
-
             clearPreexistingLists();
-            addRobot();
-
+            addRobotsToLists();
             return true;
         } else
             return false;
     }
 
-    private void addRobot() {
+    private void addRobotsToLists() {
         for (RobotInfo robot : nearbyEnemies) {
             if (robot.type.equals(RobotType.ENLIGHTENMENT_CENTER)) {
                 nearbyEnemyECs.add(robot);
@@ -171,13 +165,13 @@ public class Muckraker extends Unit {
         }
     }
 
-    private void clearPreexistingLists() {
+    Boolean clearPreexistingLists() {
         nearbyEnemyMuckraker.clear();
         nearbyEnemyPolis.clear();
         nearbyEnemySlanderer.clear();
         nearbyEnemyECs.clear();
+        return true;
     }
-
 
 
 }
