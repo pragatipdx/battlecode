@@ -8,6 +8,7 @@ public class EnlightenmentCenter extends Robot{
         super(r);
     }
 
+
     public void takeTurn() throws GameActionException {
         RobotType toBuild = nextBuild();
         int influence = invest(toBuild);

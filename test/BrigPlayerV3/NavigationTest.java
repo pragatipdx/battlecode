@@ -8,8 +8,7 @@ import static org.mockito.Mockito.when;
 
 public class NavigationTest {
 
-    Team friend = Team.A;
-    Team enemy = Team.B;
+
 
     private RobotController rcTest = mock(RobotController.class);
     private BrigPlayerV3.Navigation rpTest = new Navigation(rcTest);
