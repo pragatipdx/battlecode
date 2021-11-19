@@ -15,10 +15,13 @@ public class Slanderer extends Unit {
 
     public void takeTurn() throws GameActionException {
         super.takeTurn();
+
+        runFromEnemy();
+
+        stayCLoseToHome();
+
         if (nav.tryMove(Utility.randomDirection()))
             System.out.println("I moved!");
-              runFromEnemy();
-            stayCLoseToHome();
 
     }
 
@@ -35,6 +38,7 @@ public class Slanderer extends Unit {
         }
         return true;
     }
+
 
     public boolean stayCLoseToHome() throws GameActionException {
         Team ally = rc.getTeam();
@@ -54,7 +58,6 @@ public class Slanderer extends Unit {
         }
         return true;
     }
-
 
 
 }
