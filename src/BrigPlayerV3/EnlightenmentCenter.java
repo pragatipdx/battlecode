@@ -55,13 +55,13 @@ public class EnlightenmentCenter extends Robot{
      * @return a random RobotType
      */
     public RobotType randomSpawnableRobotType() {
-        return Util.spawnableRobot[(int) (Math.random() * Util.spawnableRobot.length)];
+        return Utility.spawnableRobot[(int) (Math.random() * Utility.spawnableRobot.length)];
     }
 
     public void buildSpawnableRobot(int val,int influence) throws GameActionException
-    {for(Direction dir: Util.directions)
-    {if(rc.canBuildRobot(Util.spawnableRobot[val],dir,influence));
-        {rc.buildRobot(Util.spawnableRobot[val],dir,influence);}}}
+    {for(Direction dir: Utility.directions)
+    {if(rc.canBuildRobot(Utility.spawnableRobot[val],dir,influence));
+        {rc.buildRobot(Utility.spawnableRobot[val],dir,influence);}}}
 
 
     //count number of enemy politicians in sensor radius
@@ -106,7 +106,7 @@ public class EnlightenmentCenter extends Robot{
     }
 
     public void startBuild(RobotType toBuild, int influence) throws GameActionException {
-        for (Direction dir : Util.directions) {
+        for (Direction dir : Utility.directions) {
             if (rc.canBuildRobot(toBuild, dir, influence)) {
                 rc.buildRobot(toBuild, dir, influence);
                 System.out.println(toBuild.name());

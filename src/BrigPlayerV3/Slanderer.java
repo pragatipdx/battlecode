@@ -9,9 +9,13 @@ public class Slanderer extends Unit {
         super(r);
     }
 
+    public Slanderer(RobotController r, Team enemy, Team friend) {
+        super(r, enemy, friend);
+    }
+
     public void takeTurn() throws GameActionException {
         super.takeTurn();
-        if (nav.tryMove(Util.randomDirection()))
+        if (nav.tryMove(Utility.randomDirection()))
             System.out.println("I moved!");
               runFromEnemy();
             stayCLoseToHome();
@@ -24,7 +28,7 @@ public class Slanderer extends Unit {
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (robot.getType() == RobotType.MUCKRAKER) {
                 MapLocation Mlocate = robot.getLocation();
-                if (nav.runAwayFromMuck(Mlocate)) {
+                if (nav.moveAway(Mlocate)) {
                     System.out.println("I ranAway!");
                 }
             }

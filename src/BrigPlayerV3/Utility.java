@@ -1,7 +1,7 @@
 package BrigPlayerV3;
 import battlecode.common.*;
 
-public class Util {
+public class Utility {
     static Direction[] directions = {
             Direction.NORTH,
             Direction.NORTHEAST,

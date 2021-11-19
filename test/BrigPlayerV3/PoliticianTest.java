@@ -8,13 +8,27 @@ import org.junit.Before;
 import org.junit.Test;
 //import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 
 public class PoliticianTest {
 
+    Team friend = Team.A;
+    Team enemy = Team.B;
+
+
     private RobotController rcTest = mock(RobotController.class);
-    private BrigPlayerV3.Politician rpTest = new Politician(rcTest);
-/*
+    private BrigPlayerV3.Politician rpTest = new Politician(rcTest,enemy,friend);
+    RobotInfo enemyBotMuck = new RobotInfo(2, enemy, RobotType.MUCKRAKER, 10, 10, new MapLocation(1, 0));
+
+//    @Mock
+//    private RobotInfo[] EnemyBotInfoArr = new RobotInfo[1];
+//
+//    @Before
+//    public void setUp() {
+//        MockitoAnnotations.initMocks(this);
+//    }
+
     @Test
     public void testEmpower() throws GameActionException {
         RobotInfo bot1 = new RobotInfo(1, Team.B, RobotType.POLITICIAN, 10, 10, new MapLocation(0, 0));
@@ -41,8 +55,10 @@ public class PoliticianTest {
         when(rcTest.canMove(Direction.SOUTHWEST)).thenReturn(false);
         when(rcTest.canMove(Direction.WEST)).thenReturn(false);
         when(rcTest.canMove(Direction.NORTHWEST)).thenReturn(false);
-        assertFalse(rpTest.protectSlandere(1));
+
+//        EnemyBotInfoArr[0]=enemyBotMuck;
+        assertFalse(rpTest.protectSlanderer(1));
     }
- */
+
 }
 

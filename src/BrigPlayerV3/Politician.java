@@ -1,6 +1,7 @@
 package BrigPlayerV3;
 
 import battlecode.common.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class Politician extends Unit {
 
@@ -9,14 +10,18 @@ public class Politician extends Unit {
         super(r);
     }
 
+    public Politician(RobotController r, Team enemy, Team friend) {
+        super(r, enemy, friend);
+    }
+
     public void takeTurn() throws GameActionException {
 
-        if (nav.tryMove(Util.randomDirection()))
+        if (nav.tryMove(Utility.randomDirection()))
             System.out.println("I moved!");
 
         int actionRadius = rc.getType().actionRadiusSquared;
         // Protect slanderer from enemy
-        protectSlandere(actionRadius);
+        protectSlanderer(actionRadius);
 
         // Empower if enemy and neutral within range
         politicianEmpower(actionRadius);
@@ -26,7 +31,7 @@ public class Politician extends Unit {
 
     }
 
-    private boolean protectSlandere(int actionRadius) throws GameActionException {
+    Boolean protectSlanderer(int actionRadius) throws GameActionException {
         Team ally = rc.getTeam();
         for (RobotInfo robotA : rc.senseNearbyRobots(actionRadius, ally)) {
             if (robotA.getType() == RobotType.SLANDERER) {
@@ -44,7 +49,7 @@ public class Politician extends Unit {
         return true;
     }
 
-    private boolean findWeekestInfluenceEC() {
+    boolean findWeekestInfluenceEC() {
         int senseRadius = rc.getType().sensorRadiusSquared;
         RobotInfo weak_Health_EC=null;
         int weak_influence = (int)(Double.MAX_VALUE);
@@ -62,7 +67,7 @@ public class Politician extends Unit {
     }
 
 
-    public boolean politicianEmpower(int actionRadius) throws GameActionException
+    Boolean politicianEmpower(int actionRadius) throws GameActionException
     {
         boolean val=true;
         RobotInfo[] attackable = rc.senseNearbyRobots(actionRadius, rc.getTeam().opponent());

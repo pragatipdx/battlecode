@@ -43,16 +43,16 @@ public class Navigation {
     }
 
 
-    boolean moveToDest(Direction route_to_dir) throws GameActionException {
-        Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
-        for (Direction dir : dirs) {
-            if (rc.canMove(dir)) {
-                rc.move(dir);
-                return true;
-            }
-        }
-        return false;
-    }
+//    boolean moveToDest(Direction route_to_dir) throws GameActionException {
+//        Direction[] dirs = {route_to_dir, route_to_dir.rotateRight(), route_to_dir.rotateLeft(), route_to_dir.rotateRight().rotateRight(), route_to_dir.rotateLeft().rotateLeft()};
+//        for (Direction dir : dirs) {
+//            if (rc.canMove(dir)) {
+//                rc.move(dir);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
 
     //basic pathfinding bug
@@ -124,18 +124,7 @@ public class Navigation {
         }
     }
 
-    boolean runAwayFromMuck(MapLocation avoid) throws GameActionException {
-        Direction Dlocate = rc.getLocation().directionTo(avoid);
-        Direction OppDlocate = Dlocate.opposite();
-        if (rc.canMove(OppDlocate)) {
-            rc.move(OppDlocate);
-            return true;
-//                System.out.println("!!!!!!!!!!I am moving away from muckraker towards " + OppDlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(OppDlocate));
 
-        } else {
-            return false;
-        }
-    }
 
 
 }

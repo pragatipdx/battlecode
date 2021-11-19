@@ -9,7 +9,7 @@ import org.junit.Test;
 //import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-public class ECTest {
+public class EnlightenmentCenterTest {
 
     private RobotController rcTest = mock(RobotController.class);
     private EnlightenmentCenter ECtest = new EnlightenmentCenter(rcTest);

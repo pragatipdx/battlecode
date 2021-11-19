@@ -63,7 +63,7 @@ public class Muckraker extends Unit {
     }
 
 
-    public RobotInfo[] senseNearbyRobotsInSenseRadius() {
+    RobotInfo[] senseNearbyRobotsInSenseRadius() {
         RobotInfo[] robotInfos = rc.senseNearbyRobots(senseRadius);
         return robotInfos;
     }
