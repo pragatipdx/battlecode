@@ -21,7 +21,7 @@ public class EnlightenmentCenter extends Robot{
         startBuild(toBuild, influence);
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
-             startbidding();
+        startbidding();
     }
 
     public void startbidding() throws GameActionException {
@@ -55,14 +55,14 @@ public class EnlightenmentCenter extends Robot{
      *
      * @return a random RobotType
      */
-    public RobotType randomSpawnableRobotType() {
+    /*public RobotType randomSpawnableRobotType() {
         return Utility.spawnableRobot[(int) (Math.random() * Utility.spawnableRobot.length)];
-    }
+    }*/
 
-    public void buildSpawnableRobot(int val,int influence) throws GameActionException
+   /* public void buildSpawnableRobot(int val,int influence) throws GameActionException
     {for(Direction dir: Utility.directions)
     {if(rc.canBuildRobot(Utility.spawnableRobot[val],dir,influence));
-        {rc.buildRobot(Utility.spawnableRobot[val],dir,influence);}}}
+        {rc.buildRobot(Utility.spawnableRobot[val],dir,influence);}}} */
 
 
     //count number of enemy politicians in sensor radius

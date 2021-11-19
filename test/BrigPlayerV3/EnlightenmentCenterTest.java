@@ -52,12 +52,14 @@ public class EnlightenmentCenterTest {
         when (rcTest.getRoundNum()).thenReturn(100);
         when (rcTest.getTeamVotes()).thenReturn(0);
         when (rcTest.getInfluence()).thenReturn(100);
+        when (rcTest.canBid(10)).thenReturn(true);
         ECtest.startbidding();
         verify(rcTest, times(1)).canBid(10);
 
         when (rcTest.getRoundNum()).thenReturn(100);
         when (rcTest.getTeamVotes()).thenReturn(500);
         when (rcTest.getInfluence()).thenReturn(100);
+        when (rcTest.canBid(6)).thenReturn(true);
         ECtest.startbidding();
         verify(rcTest, times(1)).canBid(6);
     }
@@ -65,6 +67,19 @@ public class EnlightenmentCenterTest {
     @Test
     public void testBuild() throws GameActionException {
         ECtest.startBuild(RobotType.SLANDERER, 50);
-        verify(rcTest, times(1)).canBuildRobot(RobotType.SLANDERER, Direction.NORTH, 50);
+        //when(rcTest.canBuildRobot(RobotType.SLANDERER, Direction.NORTH, 50)).thenReturn(true);
+        verify(rcTest).canBuildRobot(RobotType.SLANDERER, Direction.NORTH, 50);
+    }
+
+    @Test
+    public void testTurn() throws GameActionException {
+        RobotInfo bot1 = new RobotInfo(1, Team.B, RobotType.POLITICIAN, 10, 10, new MapLocation(0, 0));
+        RobotInfo bot2 = new RobotInfo(2, Team.A, RobotType.POLITICIAN, 10, 10, new MapLocation(1, 0));
+        RobotInfo[] arr1 = new RobotInfo[2];
+        arr1[0] = bot1;
+        arr1[1] = bot2;
+        when(rcTest.getTeam()).thenReturn(Team.A);
+        when(rcTest.senseNearbyRobots()).thenReturn(arr1);
+        ECtest.takeTurn();
     }
 }
