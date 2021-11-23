@@ -4,7 +4,6 @@ import battlecode.common.*;
 
 public class Slanderer extends Unit {
 
-
     public Slanderer(RobotController r) {
         super(r);
     }
@@ -15,18 +14,17 @@ public class Slanderer extends Unit {
 
     public void takeTurn() throws GameActionException {
         super.takeTurn();
-
-        runFromEnemy();
-
-        stayCLoseToHome();
+        MapLocation location = rc.getLocation();
+        runFromEnemy(location);
+        stayCLoseToHome(location);
 
         if (nav.tryMove(Utility.randomDirection()))
             System.out.println("I moved!");
-
     }
 
-    public boolean runFromEnemy() throws GameActionException {
+    public boolean runFromEnemy(MapLocation avoid) throws GameActionException {
         final int senseRadius = 20;
+        try{
         Team enemy = rc.getTeam().opponent();
         for (RobotInfo robot : rc.senseNearbyRobots(senseRadius, enemy)) {
             if (robot.getType() == RobotType.MUCKRAKER) {
@@ -36,28 +34,36 @@ public class Slanderer extends Unit {
                 }
             }
         }
+
+    }
+        catch(NullPointerException e){
+            System.out.println("NullPointerException thrown!");
+
+    }
         return true;
     }
 
 
-    public boolean stayCLoseToHome() throws GameActionException {
+    public boolean stayCLoseToHome(MapLocation avoid) throws GameActionException {
         Team ally = rc.getTeam();
         int actionRadiusA = rc.getType().actionRadiusSquared;
-        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadiusA, ally)){
-            if(robotA.getType() == RobotType.ENLIGHTENMENT_CENTER){
-                MapLocation Mlocate = robotA.getLocation();
-                Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
-                if(rc.canMove(Dlocate)){
-                    if (nav.tryMove(Dlocate)){
-                        rc.move(Dlocate);
-                        System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+        try {
+        for (RobotInfo robotA : rc.senseNearbyRobots(actionRadiusA, ally)) {
+                if (robotA.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+                    MapLocation Mlocate = robotA.getLocation();
+                    Direction Dlocate = robotA.getLocation().directionTo(Mlocate);
+                    if (rc.canMove(Dlocate)) {
+                        if (nav.tryMove(Dlocate)) {
+                            rc.move(Dlocate);
+                            System.out.println("!!!!!!!!!I am moving towards " + Dlocate + "; " + rc.isReady() + " " + rc.getCooldownTurns() + " " + rc.canMove(Dlocate));
+                        }
+
                     }
-
                 }
+            } }catch (NullPointerException e) {
+                System.out.println("NullPointerException thrown!");
             }
-        }
+
+
         return true;
-    }
-
-
-}
+    }}
