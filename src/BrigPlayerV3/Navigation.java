@@ -39,7 +39,8 @@ public class Navigation {
 
     // navigate towards a particular location
     boolean goTo(MapLocation destination) throws GameActionException {
-        return goTo(rc.getLocation().directionTo(destination));
+        goTo(rc.getLocation().directionTo(destination));
+        return true;
     }
 
 
