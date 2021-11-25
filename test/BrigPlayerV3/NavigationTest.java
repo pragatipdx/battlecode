@@ -19,6 +19,7 @@ public class NavigationTest {
      }
 
      @Test
+     @Ignore
      public void navTestGoto() throws GameActionException {
          when(rpTest.goTo(Direction.NORTH)).thenReturn(Boolean.FALSE);
          assertFalse(rpTest.goTo(new MapLocation(0,0)));
