@@ -1,7 +1,7 @@
 package BrigPlayerV3;
 
 import battlecode.common.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,13 @@ public class Politician extends Unit {
             System.out.println("I moved!");
 
 
-        RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
+        RobotInfo[] robotInfosInSenseRadius = EmpoweringRadiusBots();
         if(robotInfosInSenseRadius.length > 0){
 
-            nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
-            populateEnemyLists();
-            nearbyAlly = getNearbyAlly(robotInfosInSenseRadius);
-            populateAllyLists();
+            nearbyEnemies = politicianBotsList(robotInfosInSenseRadius);
+            enemyBotsflagCouter();
+            nearbyAlly = politicianToAction(robotInfosInSenseRadius);
+            allyBotsFlagCounter();
         }
 
 //        // Protect slanderer from enemy
@@ -46,32 +46,32 @@ public class Politician extends Unit {
         politicianEmpower();
 //
 //        //Find lowest influence EC
-//        findWeekestInfluenceEC();
+        findWeekestInfluenceEC();
 
     }
 
-    RobotInfo[] senseNearbyRobotsInSenseRadius() {
+    RobotInfo[] EmpoweringRadiusBots() {
         RobotInfo[] robotInfos = rc.senseNearbyRobots(senseRadius);
         return robotInfos;
     }
 
-    boolean populateEnemyLists() {
+    boolean enemyBotsflagCouter() {
         if(!nearbyEnemies.isEmpty()) {
-            clearPreexistingLists();
-            addRobotsToLists();
+            resetFlagCounter();
+            fetchBots();
             return true;
         } else
             return false;
     }
-    boolean populateAllyLists() {
+    boolean allyBotsFlagCounter() {
         if(!nearbyAlly.isEmpty()) {
-            clearPreexistingLists();
-            addRobotsToLists();
+            resetFlagCounter();
+            fetchBots();
             return true;
         } else
             return false;
     }
-    List<RobotInfo> getNearbyEnemies(RobotInfo[] robotInfos) {
+    List<RobotInfo> politicianBotsList(RobotInfo[] robotInfos) {
         List<RobotInfo> nearbyEnemies = new ArrayList<>();
         for (RobotInfo robot : robotInfos) {
             if (robot.team.equals(enemy)) {
@@ -80,7 +80,7 @@ public class Politician extends Unit {
         }
         return nearbyEnemies;
     }
-    List<RobotInfo> getNearbyAlly(RobotInfo[] robotInfos) {
+    List<RobotInfo> politicianToAction(RobotInfo[] robotInfos) {
         List<RobotInfo> nearbyAlly = new ArrayList<>();
         for (RobotInfo robot : robotInfos) {
             if (robot.team.equals(friend)) {
@@ -89,7 +89,9 @@ public class Politician extends Unit {
         }
         return nearbyAlly;
     }
-    private void addRobotsToLists() {
+
+
+     boolean fetchBots() {
         for (RobotInfo robot : nearbyAlly) {
             if (robot.type.equals(RobotType.SLANDERER)) {
                 nearbyFriendlySlanderer.add(robot);
@@ -102,8 +104,10 @@ public class Politician extends Unit {
                 nearbyEnemyEC.add(robot);
             }
         }
+        return true;
     }
-    boolean clearPreexistingLists() {
+
+    boolean resetFlagCounter() {
         nearbyEnemyEC.clear();
         nearbyFriendlySlanderer.clear();
         return true;
@@ -132,22 +136,24 @@ public class Politician extends Unit {
 
     }
 
-//    boolean findWeekestInfluenceEC() {
-//        int senseRadius = rc.getType().sensorRadiusSquared;
-//        RobotInfo weak_Health_EC=null;
-//        int weak_influence = (int)(Double.MAX_VALUE);
-//
-//        for (RobotInfo troop : rc.senseNearbyRobots(senseRadius, enemy)) {
-//            if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
-//                if (troop.getInfluence() < weak_influence) {
-//                    weak_Health_EC = troop;
-//                    weak_influence = troop.getInfluence();
-//
-//                }
-//            }
-//        }
-//        return true;
-//    }
+    boolean findWeekestInfluenceEC() {
+        RobotInfo weak_Health_EC=null;
+        int weak_influence = (int)(Double.MAX_VALUE);
+        if(!nearbyEnemies.isEmpty())
+        {
+            for(RobotInfo troop : nearbyEnemies)
+            {    if (troop.getType() == RobotType.ENLIGHTENMENT_CENTER) {
+                if (troop.getInfluence() < weak_influence) {
+                    weak_Health_EC = troop;
+                    weak_influence = troop.getInfluence();
+
+                }
+            }
+            }
+        }
+
+        return true;
+    }
 
 
 

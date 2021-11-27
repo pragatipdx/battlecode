@@ -56,22 +56,33 @@ public class PoliticianTest {
         RobotInfo[] robots = {};
         when(rcTest.senseNearbyRobots(senseRadius, enemy)).thenReturn(robots);
 
-        assertArrayEquals(null, politicianTest.senseNearbyRobotsInSenseRadius());
+        assertArrayEquals(null, politicianTest.EmpoweringRadiusBots());
     }
 
     @Test
-    public void getNearbyAllyTest() throws GameActionException {
+    public void politicianToActionTest() throws GameActionException {
         nearbyAlly.add(friendBotSlanderer);
         AllyInfoArr[0] = friendBotSlanderer;
-        assertEquals(nearbyAlly, politicianTest.getNearbyAlly(AllyInfoArr));
+        assertEquals(nearbyAlly, politicianTest.politicianToAction(AllyInfoArr));
     }
+
+    @Test
+    public void politicianActionTest() throws GameActionException {
+      //  nearbyAlly.add(friendBotSlanderer);
+        AllyInfoArr[0] = friendBotSlanderer;
+        RobotInfo[] robots = {};
+
+        assertEquals(nearbyAlly, politicianTest.politicianBotsList(robots));
+    }
+
+
 
     @Test
     public void senseNearbyRobotsTestNullArrayF() throws GameActionException {
         RobotInfo[] robots = {};
         when(rcTest.senseNearbyRobots(senseRadius, friend)).thenReturn(robots);
 
-        assertArrayEquals(null,politicianTest.senseNearbyRobotsInSenseRadius());
+        assertArrayEquals(null,politicianTest.EmpoweringRadiusBots());
     }
 
     @Test
@@ -79,20 +90,42 @@ public class PoliticianTest {
         friendBotArr[0] = friendBotSlanderer;
 
         when(rcTest.senseNearbyRobots(senseRadius)).thenReturn(friendBotArr);
-        assertEquals(friendBotArr.length, politicianTest.senseNearbyRobotsInSenseRadius().length);
-        assertArrayEquals(friendBotArr, politicianTest.senseNearbyRobotsInSenseRadius());
+        assertEquals(friendBotArr.length, politicianTest.EmpoweringRadiusBots().length);
+        assertArrayEquals(friendBotArr, politicianTest.EmpoweringRadiusBots());
+    }
+
+    @Test
+    public void fetchBots() throws GameActionException {
+        assertTrue(politicianTest.fetchBots());
+    }
+
+    @Test
+     public void botsFlagE() throws GameActionException
+    {
+       assertFalse(politicianTest.enemyBotsflagCouter());
+    }
+
+    @Test
+      public void botsFlagA()
+    {
+        assertFalse(politicianTest.allyBotsFlagCounter());
     }
 
 
     @Test
-    public void clearPreexistingListsTest() {
+    public void findWeekestEC()
+    {
+        assertTrue(politicianTest.findWeekestInfluenceEC());
+    }
+    @Test
+    public void resetFlagCounterTest() {
         when(nearbyEC.get(0)).thenReturn(enemyEC);
         nearbyEC.add(enemyEC);
-        assertTrue(politicianTest.clearPreexistingLists());
+        assertTrue(politicianTest.resetFlagCounter());
         assertEquals(0, nearbyEC.size());
         when(nearbySlanderer.get(0)).thenReturn(friendBotSlanderer);
         nearbySlanderer.add((friendBotSlanderer));
-        assertTrue(politicianTest.clearPreexistingLists());
+        assertTrue(politicianTest.resetFlagCounter());
         assertEquals(0, nearbySlanderer.size());
     }
 
