@@ -18,11 +18,11 @@ public class Slanderer extends Unit {
     public Slanderer(RobotController r, Team enemy, Team friend) {
         super(r, enemy, friend);
     }
+
     public void takeTurn() throws GameActionException {
         super.takeTurn();
         RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
         if(robotInfosInSenseRadius.length > 0){
-
             nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
             populateEnemyLists();
             nearbyAlly = getNearbyAlly(robotInfosInSenseRadius);
@@ -67,18 +67,18 @@ public class Slanderer extends Unit {
 
     }
 
-
     public boolean stayCLoseToHome() throws GameActionException {
 
         if(!nearbyEC.isEmpty()) {
             for (RobotInfo robot : nearbyEC) {
-                System.out.println("\nFound Friend EC - MOVING CLOSER    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
+                System.out.println("\nFound Friend EC - MOVING CLOSER    DISTANCE: ");
                 nav.goTo(robot.location);
             }
             return true;
         } else
             return false;
     }
+
     List<RobotInfo> getNearbyEnemies(RobotInfo[] robotInfos) {
         List<RobotInfo> nearbyEnemies = new ArrayList<>();
         for (RobotInfo robot : robotInfos) {
@@ -88,6 +88,7 @@ public class Slanderer extends Unit {
         }
         return nearbyEnemies;
     }
+
     List<RobotInfo> getNearbyAlly(RobotInfo[] robotInfos) {
         List<RobotInfo> nearbyAlly = new ArrayList<>();
         for (RobotInfo robot : robotInfos) {
@@ -108,9 +109,20 @@ public class Slanderer extends Unit {
             }
         }
     }
+
     Boolean clearPreexistingLists() {
         nearbyEnemyMuckraker.clear();
         nearbyEC.clear();
         return true;
+    }
+
+    Boolean exposeEnemy(RobotInfo robot) throws GameActionException {
+        if (rc.canExpose(robot.location)) {
+            System.out.println("\ne x p o s e d\n");
+            rc.expose(robot.location);
+            return true;
+        } else {
+            return false;
+        }
     }
 }

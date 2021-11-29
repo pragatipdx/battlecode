@@ -9,8 +9,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class SlandererTest {
     static RobotController rc;
@@ -42,12 +41,29 @@ public class SlandererTest {
         MockitoAnnotations.initMocks(this);
     }
 
+    @Test
+    public void constructorTest() throws GameActionException {
+        when(rcTest.getTeam()).thenReturn(friend);
+        when(rcTest.getTeam().opponent()).thenReturn(enemy);
+        Muckraker testMuck = new Muckraker(rcTest);
+    }
 
+    @Test
+    public void takeTurnTest() throws GameActionException {
+        MapLocation mapLocTest1 = new MapLocation(10, 10);
+        enemyBotArr[0] = enemyMuck;
+        enemyBotArr[1] = friendBotEC;
+        when(rcTest.getTeam()).thenReturn(friend);
+        when(rcTest.senseNearbyRobots()).thenReturn(enemyBotArr);
+        when(rcTest.isReady()).thenReturn(true);
+        when(rcTest.getLocation()).thenReturn(mapLocTest1);
+        when(rcTest.senseNearbyRobots(senseRadius)).thenReturn(enemyBotArr);
+        slandererTest.takeTurn();
+    }
     @Test
     public void senseNearbyRobotsTestNullArrayE() throws GameActionException {
         RobotInfo[] robots = {};
         when(rcTest.senseNearbyRobots(senseRadius, enemy)).thenReturn(robots);
-
         assertArrayEquals(null, slandererTest.senseNearbyRobotsInSenseRadius());
     }
 
@@ -55,26 +71,34 @@ public class SlandererTest {
     public void senseNearbyRobotsTestNullArrayF() throws GameActionException {
         RobotInfo[] robots = {};
         when(rcTest.senseNearbyRobots(senseRadius, friend)).thenReturn(robots);
-
         assertArrayEquals(null, slandererTest.senseNearbyRobotsInSenseRadius());
     }
 
     @Test
     public void senseNearbyRobotsTestArrayLen() throws GameActionException {
         friendBotArr[0] = friendBotEC;
-
         when(rcTest.senseNearbyRobots(senseRadius)).thenReturn(friendBotArr);
-
         assertEquals(friendBotArr.length, slandererTest.senseNearbyRobotsInSenseRadius().length);
         assertArrayEquals(friendBotArr, slandererTest.senseNearbyRobotsInSenseRadius());
     }
 
     @Test
+    public void exposeEnemyTestTrue() throws GameActionException {
+        enemyBotArr[0] = enemyMuck;
+        when(rcTest.canExpose(enemyMuck.location)).thenReturn(true);
+        assertTrue(slandererTest.exposeEnemy(enemyMuck));
+    }
+
+    @Test
+    public void exposeEnemyTestFalse() throws GameActionException {
+        when(rcTest.canExpose(enemyMuck.location)).thenReturn(false);
+        assertFalse(slandererTest.exposeEnemy(enemyMuck));
+    }
+
+    @Test
     public void senseNearbyEnemyRobotsTestArrayLen() throws GameActionException {
         enemyBotArr[0] = enemyMuck;
-
         when(rcTest.senseNearbyRobots(senseRadius)).thenReturn(enemyBotArr);
-
         assertEquals(enemyBotArr.length, slandererTest.senseNearbyRobotsInSenseRadius().length);
         assertArrayEquals(enemyBotArr, slandererTest.senseNearbyRobotsInSenseRadius());
     }
