@@ -52,7 +52,6 @@ public class Muckraker extends Unit {
 
                 if(!nearbyNeutralECs.isEmpty()){
                     setFlagToNeutralECLoc();
-
                 }
 
                 nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
@@ -73,24 +72,23 @@ public class Muckraker extends Unit {
     }
 
     void setFlagToNeutralECLoc() throws GameActionException {
-        if(comms.sendLocation(rc)) {
-            System.out.println("Set Flag to THIS LOCATION if NEUTRAL EC");
-        } else {
-            System.out.println("FAILED TO SET FLAG TO NEUTRAL EC LOCATION");
-        }
+//        if(comms.sendLocation(rc)) {
+//            System.out.println("Set Flag to THIS LOCATION if NEUTRAL EC");
+//            comms.getLocationFromFlag(rc, rc.getFlag(rc.getID()));
+//        } else {
+//            System.out.println("FAILED TO SET FLAG TO NEUTRAL EC LOCATION");
+//        }
     }
 
 
     void move() throws GameActionException {
-        if (turnCount%2==0) {
-            System.out.printf("Trying to move away from HOME");
-            if(nav.moveAway(hqLoc))
-                System.out.printf("MOVED away from HOME");
+        if (turnCount%3==0) {
+//            System.out.printf("Trying to move away from HOME");
+            nav.moveAway(hqLoc);
         }
         else{
-            System.out.printf("Trying to move RANDOMLY");
+//            System.out.printf("Trying to move RANDOMLY");
             nav.goTo(Utility.randomDirection());
-            System.out.printf("MOVED RANDOMLY");
         }
 
     }
@@ -138,7 +136,7 @@ public class Muckraker extends Unit {
     Boolean handleEnemyPoli() throws GameActionException {
         if(!nearbyEnemyPolis.isEmpty()) {
             for (RobotInfo robot : nearbyEnemyPolis) {
-                System.out.println("\nFound Enemy POLITICIAN!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
+//                System.out.println("\nFound Enemy POLITICIAN!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
                 nav.moveAway(robot.location);
             }
             return true;
@@ -150,7 +148,7 @@ public class Muckraker extends Unit {
     Boolean handleEnemyEC() throws GameActionException {
         if(!nearbyEnemyECs.isEmpty()) {
             for (RobotInfo robot : nearbyEnemyECs) {
-                System.out.println("\nFound Enemy EC - MOVING CLOSER    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
+//                System.out.println("\nFound Enemy EC - MOVING CLOSER    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
                 nav.goTo(robot.location);
             }
             return true;
@@ -162,7 +160,7 @@ public class Muckraker extends Unit {
     Boolean handleEnemySlanderer() throws GameActionException {
         if(!nearbyEnemySlanderer.isEmpty()) {
             for (RobotInfo robot : nearbyEnemySlanderer) {
-                System.out.println("\nFound Enemy SLANDERER - MOVING CLOSER   DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
+//                System.out.println("\nFound Enemy SLANDERER - MOVING CLOSER   DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
                 exposeEnemy(robot);
                 nav.goTo(robot.location);
             }
