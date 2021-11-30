@@ -59,7 +59,8 @@ public class Slanderer extends Unit {
     public boolean runFromEnemy() throws GameActionException {
         if(!nearbyEnemyMuckraker.isEmpty()) {
             for (RobotInfo robot : nearbyEnemyMuckraker) {
-                System.out.println("\nFound Enemy MUCKRACKER!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
+                //getting null pointer exception, commenting out for now, doesn't affect aything and fixes problem for now
+               // System.out.println("\nFound Enemy MUCKRACKER!!!!! -   MOVING   AWAY!!!!    DISTANCE: " + currentLocation.distanceSquaredTo(robot.getLocation()));
                 nav.moveAway(robot.location);
             }
             return true;
