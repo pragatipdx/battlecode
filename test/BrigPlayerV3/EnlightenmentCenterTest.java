@@ -30,10 +30,10 @@ public class EnlightenmentCenterTest {
 
     @Test
     public void testInvest() throws GameActionException {
-        assertEquals(5, ECtest.invest(RobotType.MUCKRAKER));
+        assertEquals(2, ECtest.invest(RobotType.MUCKRAKER));
         when (rcTest.getRoundNum()).thenReturn(1);
         assertEquals(50, ECtest.invest(RobotType.POLITICIAN));
-        when (rcTest.getRoundNum()).thenReturn(1);
+        when (rcTest.getInfluence()).thenReturn(100);
         assertEquals(50, ECtest.invest(RobotType.SLANDERER));
     }
 
@@ -81,5 +81,35 @@ public class EnlightenmentCenterTest {
         when(rcTest.getTeam()).thenReturn(Team.A);
         when(rcTest.senseNearbyRobots()).thenReturn(arr1);
         ECtest.takeTurn();
+    }
+
+    @Test
+    public void defenseTest() throws GameActionException {
+        RobotInfo bot1 = new RobotInfo(1, Team.B, RobotType.POLITICIAN, 10, 10, new MapLocation(0, 0));
+        RobotInfo bot2 = new RobotInfo(2, Team.A, RobotType.POLITICIAN, 10, 10, new MapLocation(1, 0));
+        RobotInfo[] arr1 = new RobotInfo[2];
+        arr1[0] = bot1;
+        arr1[1] = bot2;
+        when(rcTest.getTeam()).thenReturn(Team.A);
+        when(rcTest.senseNearbyRobots(40, rcTest.getTeam().opponent())).thenReturn(arr1);
+        ECtest.defensiveAction();
+    }
+
+    @Test
+    public void planTest() throws GameActionException {
+        when(rcTest.getRoundNum()).thenReturn(1);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(7);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(9);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(17);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(29);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(3);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
+        when(rcTest.getRoundNum()).thenReturn(300);
+        ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
     }
 }

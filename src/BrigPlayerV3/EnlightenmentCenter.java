@@ -16,9 +16,7 @@ public class EnlightenmentCenter extends Robot{
         //sense nearby enemy politicans
         int enemyPolCount = countEnemyPoliticians();
 
-        //set an alert flag if enemy politicians are present
-
-        startBuild(toBuild, influence);
+        buildPlan(toBuild, influence, enemyPolCount);
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
         startbidding();
@@ -70,7 +68,7 @@ public class EnlightenmentCenter extends Robot{
         RobotInfo[] nearbyBots = rc.senseNearbyRobots();
         int count = 0;
         for (RobotInfo bot : nearbyBots) {
-            if (bot.team == rc.getTeam().opponent() && bot.type == RobotType.POLITICIAN) {
+            if (bot.team == rc.getTeam().opponent() && bot.type != RobotType.SLANDERER) {
                 count += 1;
             }
         }
@@ -99,8 +97,8 @@ public class EnlightenmentCenter extends Robot{
     //determines how much influence to invest in a robot based on its type
     public int invest(RobotType toBuild) {
         switch (toBuild) {
-            case MUCKRAKER: return 5;
-            case SLANDERER: if (rc.getRoundNum() > 400) return 150;
+            case MUCKRAKER: return 2;
+            case SLANDERER: if (rc.getInfluence() > 250) return rc.getInfluence() / 5;
             case POLITICIAN:
         }
         return 50;
@@ -111,9 +109,52 @@ public class EnlightenmentCenter extends Robot{
             if (rc.canBuildRobot(toBuild, dir, influence)) {
                 rc.buildRobot(toBuild, dir, influence);
                 System.out.println(toBuild.name());
-            } else {
-                break;
             }
+        }
+    }
+
+    //if nearby hostiles are detected, build politicians to intercept them
+    public void defensiveAction() throws GameActionException {
+       RobotInfo[] nearbyEnemies = rc.senseNearbyRobots(40, rc.getTeam().opponent());
+       int enemyCount = nearbyEnemies.length;
+       int influenceHighest = 0;
+       int influenceSum = 0;
+       for (RobotInfo bot : nearbyEnemies) {
+           if (bot.influence > influenceHighest && bot.type != RobotType.SLANDERER) {
+               influenceHighest = bot.influence;
+           }
+           influenceSum += bot.influence;
+       }
+
+       startBuild(RobotType.POLITICIAN, influenceHighest + 1);
+    }
+
+    public void buildPlan(RobotType toBuild, int invest, int enemies) throws GameActionException {
+        int round = rc.getRoundNum();
+        if (round < 30) {
+            switch (round) {
+                case 1:
+                    startBuild(RobotType.SLANDERER, 150);
+                    break;
+                case 7:
+                    startBuild(RobotType.SLANDERER, 30);
+                    break;
+                case 9:
+                    startBuild(RobotType.POLITICIAN, 10);
+                    break;
+                case 17:
+                    startBuild(RobotType.SLANDERER, 50);
+                    break;
+                case 29:
+                    startBuild(RobotType.SLANDERER, 100);
+                    break;
+                default:
+                    startBuild(RobotType.MUCKRAKER, 1);
+            }
+        } else if (enemies > 0) {
+            defensiveAction();
+        } else {
+            startBuild(toBuild, invest);
         }
     }
 
