@@ -42,9 +42,18 @@ public class Muckraker extends Unit {
 
             RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
 
+            nearbyEnemies.clear();
+
+            clearPreexistingLists();
+
             if(robotInfosInSenseRadius.length > 0){
 
                 List<RobotInfo> nearbyNeutralECs = getNearbyNeutralEC(robotInfosInSenseRadius);
+
+                if(!nearbyNeutralECs.isEmpty()){
+                    setFlagToNeutralECLoc();
+
+                }
 
                 nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
 
@@ -57,7 +66,31 @@ public class Muckraker extends Unit {
 
             handleEnemyPoli();
 
-            nav.moveAway(hqLoc);
+            move();
+
+        }
+
+    }
+
+    void setFlagToNeutralECLoc() throws GameActionException {
+        if(comms.sendLocation(rc)) {
+            System.out.println("Set Flag to THIS LOCATION if NEUTRAL EC");
+        } else {
+            System.out.println("FAILED TO SET FLAG TO NEUTRAL EC LOCATION");
+        }
+    }
+
+
+    void move() throws GameActionException {
+        if (turnCount%2==0) {
+            System.out.printf("Trying to move away from HOME");
+            if(nav.moveAway(hqLoc))
+                System.out.printf("MOVED away from HOME");
+        }
+        else{
+            System.out.printf("Trying to move RANDOMLY");
+            nav.goTo(Utility.randomDirection());
+            System.out.printf("MOVED RANDOMLY");
         }
 
     }
@@ -141,7 +174,6 @@ public class Muckraker extends Unit {
 
     Boolean populateEnemyLists() {
         if(!nearbyEnemies.isEmpty()) {
-            clearPreexistingLists();
             addRobotsToLists();
             return true;
         } else

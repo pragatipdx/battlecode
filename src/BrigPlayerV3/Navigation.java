@@ -109,16 +109,16 @@ public class Navigation {
         if(rc.canMove(dirAwayFromLocation)) {
 
             rc.move(dirAwayFromLocation);
-//            System.out.println("I AM MOVING    AWAY  ");
+            System.out.println("I AM MOVING    AWAY  ");
             return true;
 
         } else {
 
             if(goTo(dirAwayFromLocation)) {
-//              System.out.println("I AM MOVING    AWAY  ");
+              System.out.println("I AM MOVING    AWAY  ");
                 return true;
             } else {
-//              System.out.println("COULD    NOT   MOVE    AWAY  !!!!");
+              System.out.println("COULD    NOT   MOVE    AWAY  !!!!");
                 return false;
             }
 
