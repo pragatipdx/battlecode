@@ -21,6 +21,7 @@ public class Slanderer extends Unit {
 
     public void takeTurn() throws GameActionException {
         super.takeTurn();
+        currentLocation = rc.getLocation();
         RobotInfo[] robotInfosInSenseRadius = senseNearbyRobotsInSenseRadius();
         if(robotInfosInSenseRadius.length > 0){
             nearbyEnemies = getNearbyEnemies(robotInfosInSenseRadius);
@@ -71,8 +72,12 @@ public class Slanderer extends Unit {
 
         if(!nearbyEC.isEmpty()) {
             for (RobotInfo robot : nearbyEC) {
-                System.out.println("\nFound Friend EC - MOVING CLOSER    DISTANCE: ");
-                nav.goTo(robot.location);
+                if(rc.getLocation().distanceSquaredTo(robot.location) < 18) {
+                    nav.moveAway(robot.location);
+                } else {
+                    System.out.println("\nFound Friend EC - MOVING CLOSER    DISTANCE: ");
+                    nav.goTo(robot.location);
+                }
             }
             return true;
         } else
