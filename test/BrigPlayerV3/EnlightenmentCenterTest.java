@@ -112,4 +112,11 @@ public class EnlightenmentCenterTest {
         when(rcTest.getRoundNum()).thenReturn(300);
         ECtest.buildPlan(RobotType.POLITICIAN, 50, 0);
     }
+
+    @Test
+    public void flagTest() throws GameActionException {
+        ECtest.allies = new int[1];
+        ECtest.allies[0] = 1;
+        ECtest.fetchFlag();
+    }
 }

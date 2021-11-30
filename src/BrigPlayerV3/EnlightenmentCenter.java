@@ -7,7 +7,7 @@ public class EnlightenmentCenter extends Robot{
     public EnlightenmentCenter(RobotController r) {
         super(r);
     }
-
+    int[] allies = new int[0];
 
     public void takeTurn() throws GameActionException {
         RobotType toBuild = nextBuild();
@@ -20,6 +20,9 @@ public class EnlightenmentCenter extends Robot{
 
         // Bidding - Check is votes is upper threshold and start bidding after building influence
         startbidding();
+
+        // Search list of ally ID's for flags
+        fetchFlag();
     }
 
     public void startbidding() throws GameActionException {
@@ -108,6 +111,8 @@ public class EnlightenmentCenter extends Robot{
         for (Direction dir : Utility.directions) {
             if (rc.canBuildRobot(toBuild, dir, influence)) {
                 rc.buildRobot(toBuild, dir, influence);
+                allies = java.util.Arrays.copyOf(allies, allies.length + 1);
+                allies[allies.length - 1] = rc.senseRobotAtLocation(rc.adjacentLocation(dir)).getID();
                 System.out.println(toBuild.name());
             }
         }
@@ -158,4 +163,12 @@ public class EnlightenmentCenter extends Robot{
         }
     }
 
+    //gets flag from newest robot with a nonzero flag
+    public void fetchFlag() throws GameActionException {
+        int flag = 0;
+        for (int ID : allies) {
+            if (rc.canGetFlag(ID)) flag = rc.getFlag(ID);
+        }
+        if (rc.canSetFlag(flag) && flag != 0) rc.setFlag(flag);
+    }
 }
